@@ -76,11 +76,31 @@ export default function Auth() {
     }
   }, [navigate, checkUserAuth])
 
+  const currentUrl = window.location.href
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 gap-6">
       <div className="flex flex-col items-center gap-4">
         <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
         <p className="text-sm text-muted-foreground text-center">{status}</p>
+      </div>
+
+      {/* Debug: current URL + copy button */}
+      <div className="w-full max-w-md flex flex-col gap-2">
+        <span className="text-xs text-muted-foreground">Current URL (debug)</span>
+        <textarea
+          readOnly
+          value={currentUrl}
+          rows={4}
+          className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-xs text-foreground font-mono break-all resize-none outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => navigator.clipboard?.writeText(currentUrl)}
+          className="self-end px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity"
+        >
+          Copy URL
+        </button>
       </div>
     </div>
   )
