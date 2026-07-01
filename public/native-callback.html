@@ -6,34 +6,57 @@
   <title>Completing sign in...</title>
   <style>
     body { margin: 0; display: flex; align-items: center; justify-content: center;
-           min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-           background: #fff; color: #888; font-size: 14px; }
+      min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff; color: #888; font-size: 14px; padding: 16px; text-align: center; }
+    #debug { margin-top: 16px; font-family: monospace; font-size: 11px; word-break: break-all; color: #aaa; }
   </style>
 </head>
 <body>
-  <p>Completing sign in...</p>
+  <div>
+    <p id="msg">Completing sign in...</p>
+    <div id="debug"></div>
+  </div>
   <script>
     (function () {
-      var params       = new URLSearchParams(window.location.search)
-      var hash         = new URLSearchParams(window.location.hash.substring(1))
-      // deeplink_scheme is passed via OAuth `state` param (Google returns it in the hash for implicit flow)
-      var scheme       = hash.get('state') || params.get('state') || params.get('deeplink_scheme')
-      if (!scheme) { console.error('no deeplink_scheme'); return; }
+      // Google (implicit flow) returns the token in the URL HASH:
+      //   #access_token=ya29...&state=myapp
+      // But some environments deliver it in the query string. Read BOTH.
+      var hash   = new URLSearchParams(window.location.hash.substring(1));
+      var query  = new URLSearchParams(window.location.search);
 
-      var accessToken  = hash.get('access_token')
-      var refreshToken = hash.get('refresh_token') || ''
-      var error        = hash.get('error') || params.get('error')
+      function pick(key) { return hash.get(key) || query.get(key); }
 
-      if (!accessToken) {
-        window.location.href = scheme + '://oauth/auth?error=' + encodeURIComponent(error || 'no_access_token')
-        return
+      // deeplink_scheme travels via `state`
+      var scheme      = pick('state') || pick('deeplink_scheme');
+      var accessToken = pick('access_token');
+      var error       = pick('error');
+
+      // Show what actually arrived, in case something is still off
+      document.getElementById('debug').innerText =
+        'scheme=' + (scheme || 'none') +
+        ' | token=' + (accessToken ? 'yes' : 'no') +
+        ' | error=' + (error || 'none');
+
+      if (!scheme) {
+        document.getElementById('msg').innerText = 'Error: missing deeplink scheme';
+        return;
       }
 
-      window.location.href =
-        scheme + '://oauth/auth' +
-        '?access_token='  + encodeURIComponent(accessToken) +
-        '&refresh_token=' + encodeURIComponent(refreshToken)
-    })()
+      if (error) {
+        window.location.href = scheme + '://oauth/auth?error=' + encodeURIComponent(error);
+        return;
+      }
+
+      if (!accessToken) {
+        document.getElementById('msg').innerText = 'Error: no access token received';
+        window.location.href = scheme + '://oauth/auth?error=' + encodeURIComponent('no_access_token');
+        return;
+      }
+
+      // Fire the deeplink — Despia intercepts and routes the WebView to
+      //   /auth?access_token=ya29...
+      window.location.href = scheme + '://oauth/auth?access_token=' + encodeURIComponent(accessToken);
+    })();
   </script>
 </body>
 </html>
