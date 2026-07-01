@@ -11,6 +11,7 @@ import Auth from '@/pages/Auth';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
+import AdminUsers from '@/pages/AdminUsers';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/" element={<Home />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>

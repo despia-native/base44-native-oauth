@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import { Users } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 
 export default function Home() {
@@ -19,12 +21,22 @@ export default function Home() {
         <p className="text-sm text-muted-foreground">{user?.email}</p>
       </div>
 
-      <button
-        onClick={() => logout()}
-        className="px-6 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
-      >
-        Sign out
-      </button>
+      <div className="flex flex-col items-center gap-3">
+        {user?.role === 'admin' && (
+          <Link
+            to="/admin/users"
+            className="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Users className="w-4 h-4" /> Manage users
+          </Link>
+        )}
+        <button
+          onClick={() => logout()}
+          className="px-6 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
+        >
+          Sign out
+        </button>
+      </div>
     </div>
   )
 }
