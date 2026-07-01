@@ -1,18 +1,22 @@
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 
+// TODO: Replace with your own Google OAuth Client ID
+const GOOGLE_CLIENT_ID = '754083834914-u87c6nne95at2igropqii1k6iumv929p.apps.googleusercontent.com'
+
 const isDespia = navigator.userAgent.toLowerCase().includes('despia')
 
 export default function Login() {
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     if (isDespia) {
-      // Native: fetch OAuth URL from Base44 and open via despia oauth:// bridge
-      const { url } = await fetch('/api/auth/google-url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deeplink_scheme: 'myapp' }),
-      }).then(r => r.json())
-
+      // Native: build Google OAuth URL directly and open via despia oauth:// bridge
+      const redirectUri = `${window.location.origin}/native-callback.html?deeplink_scheme=myapp`
+      const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+        client_id: GOOGLE_CLIENT_ID,
+        redirect_uri: redirectUri,
+        response_type: 'token',
+        scope: 'openid email profile',
+      })
       despia(`oauth://?url=${encodeURIComponent(url)}`)
     } else {
       // Web: standard OAuth redirect
