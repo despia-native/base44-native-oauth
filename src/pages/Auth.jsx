@@ -16,7 +16,22 @@ export default function Auth() {
   const navigate = useNavigate()
   const { checkUserAuth } = useAuth()
   const [status, setStatus] = useState('Signing you in...')
+  const [liveUrl, setLiveUrl] = useState(window.location.href)
   const handledRef = useRef(false)
+
+  // Keep the debug text area in sync with the live URL — the native WebView
+  // swaps the URL without reloading, so we poll it here too.
+  useEffect(() => {
+    const sync = () => setLiveUrl(window.location.href)
+    window.addEventListener('popstate', sync)
+    window.addEventListener('hashchange', sync)
+    const t = setInterval(sync, 300)
+    return () => {
+      window.removeEventListener('popstate', sync)
+      window.removeEventListener('hashchange', sync)
+      clearInterval(t)
+    }
+  }, [])
 
   useEffect(() => {
     const handleToken = (token) => {
@@ -76,8 +91,6 @@ export default function Auth() {
     }
   }, [navigate, checkUserAuth])
 
-  const currentUrl = window.location.href
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 gap-6">
       <div className="flex flex-col items-center gap-4">
@@ -85,18 +98,18 @@ export default function Auth() {
         <p className="text-sm text-muted-foreground text-center">{status}</p>
       </div>
 
-      {/* Debug: current URL + copy button */}
+      {/* Debug: live current URL + copy button */}
       <div className="w-full max-w-md flex flex-col gap-2">
-        <span className="text-xs text-muted-foreground">Current URL (debug)</span>
+        <span className="text-xs text-muted-foreground">Current URL (live, debug)</span>
         <textarea
           readOnly
-          value={currentUrl}
-          rows={4}
+          value={liveUrl}
+          rows={5}
           className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-xs text-foreground font-mono break-all resize-none outline-none"
         />
         <button
           type="button"
-          onClick={() => navigator.clipboard?.writeText(currentUrl)}
+          onClick={() => navigator.clipboard?.writeText(liveUrl)}
           className="self-end px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity"
         >
           Copy URL
