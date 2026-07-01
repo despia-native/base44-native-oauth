@@ -58,7 +58,7 @@
         if (error) {
           deeplink = scheme + '://oauth/auth?error=' + encodeURIComponent(error);
         } else if (accessToken) {
-          deeplink = scheme + '://oauth/auth?token=' + encodeURIComponent(accessToken);
+          deeplink = scheme + '://oauth/auth?provider=google&token=' + encodeURIComponent(accessToken);
         } else {
           deeplink = scheme + '://oauth/auth?error=no_access_token';
         }

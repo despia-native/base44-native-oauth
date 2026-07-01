@@ -23,7 +23,9 @@ export default function Auth() {
     // native-callback.html fires: myapp://oauth/auth?token=<google token>
     // Despia routes that to /auth?token=<google token>. Also accept access_token / hash as fallbacks.
     const hash        = new URLSearchParams(window.location.hash.substring(1))
-    const googleToken = searchParams.get('token')        || searchParams.get('access_token') || hash.get('access_token')
+    const provider    = searchParams.get('provider')     || hash.get('provider')
+    const token       = searchParams.get('token')        || searchParams.get('access_token') || hash.get('access_token')
+    const googleToken = provider === 'google' ? token : (provider ? null : token)
     const base44Token = searchParams.get('base44_token') || hash.get('base44_token')
     const error       = searchParams.get('error')        || hash.get('error')
 
