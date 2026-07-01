@@ -58,11 +58,10 @@
 
       var payload = token ? ('access_token=' + encodeURIComponent(token))
                           : ('error=' + encodeURIComponent(error || 'no_token'));
-      // Deep-link to the ROOT path with the token in the HASH. The SPA host always serves
-      // "/", so it never rewrites us to /login before React boots; main.jsx then reads the
-      // hash token and routes to /auth. (Path-based deep links get rewritten to / by the
-      // static host, which triggers the auth guard → /login before the token is seen.)
-      var deeplink = scheme + '://#' + payload;
+      // Path-based deep links work in the WebView (verified: unknown paths hit the 404 route,
+      // so the host is NOT rewriting to /). Target the /oauth/auth path which renders <Auth />,
+      // with the token in the HASH so it can't be stripped. Auth reads the hash directly.
+      var deeplink = scheme + '://oauth/auth#' + payload;
 
       document.getElementById('deeplink').value = deeplink;
       document.getElementById('currenturl').value = window.location.href;

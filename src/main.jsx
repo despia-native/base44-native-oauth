@@ -5,10 +5,14 @@ import '@/index.css'
 import { captureIncomingToken, hasPendingToken } from '@/lib/deeplinkToken'
 
 // A native deep-link can reopen the app with the OAuth token on ANY path.
-// Capture it before React mounts, then make sure we land on /auth to process it.
-captureIncomingToken()
-if (hasPendingToken() && window.location.pathname !== '/auth') {
-  window.history.replaceState(null, '', '/auth')
+const onAuthPath = window.location.pathname === '/auth' || window.location.pathname === '/oauth/auth'
+// On an auth path, leave the URL untouched so <Auth /> can read the live hash token itself.
+// On any other path, capture+stash the token and route to /auth to process it.
+if (!onAuthPath) {
+  captureIncomingToken()
+  if (hasPendingToken()) {
+    window.history.replaceState(null, '', '/auth')
+  }
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
