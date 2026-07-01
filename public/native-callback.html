@@ -56,12 +56,11 @@
       var error = hash.get('error') || query.get('error');
       var scheme = hash.get('state') || query.get('state') || 'myapp'; // deeplink scheme
 
-      var payload = token ? ('access_token=' + encodeURIComponent(token))
+      var payload = token ? ('token=' + encodeURIComponent(token))
                           : ('error=' + encodeURIComponent(error || 'no_token'));
-      // Path-based deep links work in the WebView (verified: unknown paths hit the 404 route,
-      // so the host is NOT rewriting to /). Target the /oauth/auth path which renders <Auth />,
-      // with the token in the HASH so it can't be stripped. Auth reads the hash directly.
-      var deeplink = scheme + '://oauth/auth#' + payload;
+      // Path-based deep links work in the WebView (verified: unknown paths hit the 404 route).
+      // Target the /oauth/auth path which renders <Auth />, token in a QUERY param.
+      var deeplink = scheme + '://oauth/auth?' + payload;
 
       document.getElementById('deeplink').value = deeplink;
       document.getElementById('currenturl').value = window.location.href;
