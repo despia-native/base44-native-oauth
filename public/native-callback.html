@@ -15,10 +15,11 @@
   <script>
     (function () {
       var params       = new URLSearchParams(window.location.search)
-      var scheme       = params.get('deeplink_scheme')
+      var hash         = new URLSearchParams(window.location.hash.substring(1))
+      // deeplink_scheme is passed via OAuth `state` param (Google returns it in the hash for implicit flow)
+      var scheme       = hash.get('state') || params.get('state') || params.get('deeplink_scheme')
       if (!scheme) { console.error('no deeplink_scheme'); return; }
 
-      var hash         = new URLSearchParams(window.location.hash.substring(1))
       var accessToken  = hash.get('access_token')
       var refreshToken = hash.get('refresh_token') || ''
       var error        = hash.get('error') || params.get('error')
