@@ -27,11 +27,16 @@ export default function Auth() {
     }
 
     if (googleToken) {
-      // Native flow: exchange the Google access token for a Base44 session token
-      base44.auth.loginWithGoogle(googleToken)
-        .then(() => { window.location.href = '/' })
+      // Native flow: send Google token to our backend for verification + Base44 token issuance
+      // Backend verifies with Google API → finds/creates user by email → issues Base44 JWT
+      base44.functions.invoke('googleSignIn', { google_token: googleToken })
+        .then((res) => {
+          const { access_token } = res.data
+          base44.auth.setToken(access_token)
+          window.location.href = '/'
+        })
         .catch((err) => {
-          console.error('Google token exchange failed:', err)
+          console.error('Google sign-in exchange failed:', err)
           navigate('/login')
         })
     }
