@@ -7,16 +7,11 @@ const GOOGLE_CLIENT_ID = '754083834914-u87c6nne95at2igropqii1k6iumv929p.apps.goo
 const isDespia = navigator.userAgent.toLowerCase().includes('despia')
 
 export default function Login() {
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     if (isDespia) {
-      // Native: build Google OAuth URL directly and open via despia oauth:// bridge
-      const redirectUri = `${window.location.origin}/native-callback.html?deeplink_scheme=myapp`
-      const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
-        client_id: GOOGLE_CLIENT_ID,
-        redirect_uri: redirectUri,
-        response_type: 'token',
-        scope: 'openid email profile',
-      })
+      // Native: get OAuth URL from Base44 backend and open via despia oauth:// bridge
+      const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: 'myapp' });
+      const { url } = res.data;
       despia(`oauth://?url=${encodeURIComponent(url)}`)
     } else {
       // Web: standard OAuth redirect
