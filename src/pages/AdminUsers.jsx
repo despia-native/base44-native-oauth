@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
-import { ArrowLeft, Users, Loader2 } from 'lucide-react'
+import { ArrowLeft, Users, Loader2, Download } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import * as adminApi from '@/lib/adminUsers'
 import UserRow from '@/components/admin/UserRow'
@@ -47,6 +47,22 @@ export default function AdminUsers() {
     setBusyId(null)
   }
 
+  const handleExport = () => {
+    const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
+    const headers = ['Full name', 'Email', 'Role', 'Email verified', 'Last login']
+    const rows = accounts.map((a) => [
+      esc(a.full_name), esc(a.email), esc(a.role),
+      esc(a.email_verified ? 'yes' : 'no'), esc(a.last_login_at || ''),
+    ].join(','))
+    const csv = [headers.join(','), ...rows].join('\n')
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `users-${new Date().toISOString().slice(0, 10)}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -58,10 +74,18 @@ export default function AdminUsers() {
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Users className="w-5 h-5 text-primary" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold font-heading text-foreground">User management</h1>
             <p className="text-sm text-muted-foreground">{accounts.length} account{accounts.length === 1 ? '' : 's'}</p>
           </div>
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={loading || accounts.length === 0}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+          >
+            <Download className="w-4 h-4" /> Export
+          </button>
         </div>
 
         {!loading && <LoginsChart accounts={accounts} />}
