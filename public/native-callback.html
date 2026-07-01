@@ -58,7 +58,8 @@
 
       var payload = token ? ('access_token=' + encodeURIComponent(token))
                           : ('error=' + encodeURIComponent(error || 'no_token'));
-      var deeplink = scheme + '://auth?' + payload;
+      // Deep link targets the /oauth/auth path so the app opens straight on the auth handler.
+      var deeplink = scheme + '://oauth/auth?' + payload;
 
       document.getElementById('deeplink').value = deeplink;
       document.getElementById('currenturl').value = window.location.href;
