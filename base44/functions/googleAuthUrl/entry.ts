@@ -8,7 +8,10 @@ Deno.serve(async (req) => {
 
     const { deeplink_scheme } = await req.json();
     const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
-    const redirectUri = `https://${req.headers.get('host')}/native-callback.html?deeplink_scheme=${encodeURIComponent(deeplink_scheme)}`;
+
+    // ✏️ Replace with your Base44 app's public URL if it changes
+    const APP_BASE_URL = 'https://despia-connect-go.base44.app';
+    const redirectUri = `${APP_BASE_URL}/native-callback.html?deeplink_scheme=${encodeURIComponent(deeplink_scheme)}`;
 
     const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
       client_id: clientId,

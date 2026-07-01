@@ -1,6 +1,9 @@
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 
+// ✏️ Replace with your Base44 app's public URL if it changes
+const APP_BASE_URL = 'https://despia-connect-go.base44.app'
+
 // TODO: Replace with your own Google OAuth Client ID
 const GOOGLE_CLIENT_ID = '754083834914-u87c6nne95at2igropqii1k6iumv929p.apps.googleusercontent.com'
 
@@ -15,7 +18,7 @@ export default function Login() {
       despia(`oauth://?url=${encodeURIComponent(url)}`)
     } else {
       // Web: standard OAuth redirect
-      base44.auth.loginWithProvider('google', window.location.origin + '/auth')
+      base44.auth.loginWithProvider('google', APP_BASE_URL + '/auth')
     }
   }
 
