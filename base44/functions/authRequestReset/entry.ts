@@ -45,11 +45,27 @@ Deno.serve(async (req) => {
       const base = (app_url || '').replace(/\/$/, '');
       const link = `${base}/reset-password?token=${encodeURIComponent(resetToken)}`;
 
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: account.email,
-        subject: 'Reset your password',
-        body: `Hi ${account.full_name || ''},\n\nWe received a request to reset your password. Click the link below to choose a new one. This link expires in 30 minutes.\n\n${link}\n\nIf you didn't request this, you can safely ignore this email.`,
+      // Send via Resend so we can reach any email (not just registered Base44 users).
+      const resendKey = Deno.env.get('RESEND_API_KEY');
+      const html = `<p>Hi ${account.full_name || ''},</p>
+<p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
+<p><a href="${link}" style="display:inline-block;padding:10px 18px;background:#111;color:#fff;border-radius:8px;text-decoration:none">Reset password</a></p>
+<p>Or paste this link into your browser:<br>${link}</p>
+<p>If you didn't request this, you can safely ignore this email.</p>`;
+
+      const resp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'onboarding@resend.dev',
+          to: account.email,
+          subject: 'Reset your password',
+          html,
+        }),
       });
+      if (!resp.ok) {
+        console.error('Resend error:', resp.status, await resp.text());
+      }
     }
 
     return Response.json({ success: true });
