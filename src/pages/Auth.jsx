@@ -17,6 +17,7 @@ export default function Auth() {
   const { checkUserAuth } = useAuth()
   const [status, setStatus] = useState('Signing you in...')
   const [liveUrl, setLiveUrl] = useState(window.location.href)
+  const [ready, setReady] = useState(false) // set once login succeeds; user taps Continue
   const handledRef = useRef(false)
 
   // Keep the debug text area in sync with the live URL — the native WebView
@@ -41,7 +42,8 @@ export default function Auth() {
       customAuth.loginWithGoogleToken(token)
         .then(async () => {
           await checkUserAuth()
-          window.location.href = '/'
+          setStatus('Signed in! Tap Continue to enter the app.')
+          setReady(true)
         })
         .catch((err) => {
           const msg = err?.response?.data?.error || err?.message || 'Unknown error'
@@ -98,14 +100,24 @@ export default function Auth() {
         <p className="text-sm text-muted-foreground text-center">{status}</p>
       </div>
 
+      {ready && (
+        <button
+          type="button"
+          onClick={() => { window.location.href = '/' }}
+          className="w-full max-w-md px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          Continue to app
+        </button>
+      )}
+
       {/* Debug: live current URL + copy button */}
       <div className="w-full max-w-md flex flex-col gap-2">
         <span className="text-xs text-muted-foreground">Current URL (live, debug)</span>
         <textarea
           readOnly
           value={liveUrl}
-          rows={5}
-          className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-xs text-foreground font-mono break-all resize-none outline-none"
+          rows={8}
+          className="w-full rounded-lg border-2 border-primary bg-muted px-3 py-2 text-xs text-foreground font-mono break-all resize-none outline-none"
         />
         <button
           type="button"
