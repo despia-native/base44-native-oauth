@@ -711,6 +711,18 @@ export default function ScrollToTop() {
 
 ---
 
+## Why Implicit Flow (`response_type=token`) Is Required
+
+This setup **must** use the OAuth implicit flow. Here's why:
+
+`native-callback.html` is a static page — it has no server, no backend, and cannot make API calls. The only way it can read the token and fire the Despia deeplink is if Google puts the token directly in the **URL hash** (`#access_token=...`), which is exactly what `response_type=token` does.
+
+If you switched to the authorization code flow (`response_type=code`), Google would return a `code` in the query string — `native-callback.html` would have no way to exchange it for a token (that requires a server-side call with your Client Secret). The deeplink would fire with a code instead of a token, and `Auth.jsx` would receive something it can't use.
+
+**Do not change `response_type` to `code` in the backend function.** The implicit flow is the correct and intentional choice for this architecture.
+
+---
+
 ## What to Customise
 
 Search for `✏️` in the files above — there are only 2 things to change:
