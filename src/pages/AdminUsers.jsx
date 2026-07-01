@@ -4,6 +4,7 @@ import { ArrowLeft, Users, Loader2 } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import * as adminApi from '@/lib/adminUsers'
 import UserRow from '@/components/admin/UserRow'
+import LoginsChart from '@/components/admin/LoginsChart'
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -62,6 +63,8 @@ export default function AdminUsers() {
             <p className="text-sm text-muted-foreground">{accounts.length} account{accounts.length === 1 ? '' : 's'}</p>
           </div>
         </div>
+
+        {!loading && <LoginsChart accounts={accounts} />}
 
         <div className="rounded-xl border border-border bg-card">
           {loading ? (
