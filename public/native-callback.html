@@ -33,18 +33,7 @@
   <div class="box">
     <h1>Almost there</h1>
     <p>Tap the button below to return to the app and finish signing in.</p>
-
-    <label>Deep link (debug)</label>
-    <textarea id="deeplink" rows="3" readonly></textarea>
-
-    <label>Current URL (debug)</label>
-    <textarea id="currenturl" rows="3" readonly></textarea>
-
     <button id="continue">Continue to app</button>
-    <div class="row">
-      <button class="secondary" id="copyDeeplink">Copy deep link</button>
-      <button class="secondary" id="copyUrl">Copy URL</button>
-    </div>
   </div>
 
   <script>
@@ -62,9 +51,6 @@
       // Target the /oauth/auth path which renders <Auth />, token in a QUERY param.
       var deeplink = scheme + '://oauth/auth?' + payload;
 
-      document.getElementById('deeplink').value = deeplink;
-      document.getElementById('currenturl').value = window.location.href;
-
       // Redirect ONLY on button click.
       document.getElementById('continue').addEventListener('click', function () {
         var a = document.createElement('a');
@@ -73,13 +59,6 @@
         document.body.appendChild(a);
         a.click();
         setTimeout(function () { window.location.href = deeplink; }, 150);
-      });
-
-      document.getElementById('copyDeeplink').addEventListener('click', function () {
-        if (navigator.clipboard) navigator.clipboard.writeText(deeplink);
-      });
-      document.getElementById('copyUrl').addEventListener('click', function () {
-        if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
       });
     })();
   </script>
