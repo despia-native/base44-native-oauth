@@ -17,6 +17,12 @@ This codebase is a **template for a fully custom authentication system**: native
 
 Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
 
+## Despia Native Features — ALWAYS query the live docs
+
+This app runs inside a Despia native shell with 50+ native capabilities (push, biometrics, camera, haptics, IAP, geolocation, …). See **`DESPIA_NATIVE.md`** for the agent workflow.
+
+**Rule:** before implementing ANY Despia native feature, **fetch https://setup.despia.com** (or its machine index https://setup.despia.com/llms.txt) and confirm the exact `despia(...)` bridge command + setup. Never guess Despia APIs from memory — the live docs are the source of truth.
+
 ## Base44 References
 
 - CLI overview: https://docs.base44.com/developers/references/cli/get-started/overview.md
