@@ -10,12 +10,16 @@ export const appConfig = {
   // Example: if your deep link is  myapp://oauth/auth  →  set this to 'myapp'.
   deeplinkScheme: 'myapp',
 
-  // The path the deep link opens inside the app. Keep in sync with:
+  // The path the deep link opens inside the app — set it WITHOUT the "oauth/" prefix.
+  // ⚠️ Despia always prepends "oauth/" to the scheme, so the real deep link is
+  // always  <scheme>://oauth/<deeplinkPath>. Set this to just "auth" and we add
+  // "oauth/" for you. It stays in sync with:
   //   - the route in src/App.jsx ("/oauth/auth")
-  //   - the "Allowed path" you register in Despia ("oauth/auth")
+  //   - the "Allowed path" in Despia
   // Most projects never need to change this.
-  deeplinkPath: 'oauth/auth',
+  deeplinkPath: 'auth',
 }
 
 // Full deep link Despia sends back into the app, e.g. "myapp://oauth/auth".
-export const deeplinkTarget = appConfig.deeplinkScheme + '://' + appConfig.deeplinkPath
+// Despia always prepends "oauth/", so we build it explicitly here.
+export const deeplinkTarget = appConfig.deeplinkScheme + '://oauth/' + appConfig.deeplinkPath
