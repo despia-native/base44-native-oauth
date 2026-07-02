@@ -35,6 +35,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: tokenInfo.error_description || 'Token missing email scope' }, { status: 401 });
     }
 
+    // Critical: the token must be issued FOR THIS APP. Without this, any valid Google
+    // access token with email scope — including tokens minted by a different app the
+    // user authorized — would authenticate here. tokeninfo returns the client id in `aud`.
+    if (tokenInfo.aud !== Deno.env.get('GOOGLE_CLIENT_ID')) {
+      return Response.json({ error: 'Token not issued for this app' }, { status: 401 });
+    }
+
     const email = tokenInfo.email.toLowerCase().trim();
     const base44 = createClientFromRequest(req);
 

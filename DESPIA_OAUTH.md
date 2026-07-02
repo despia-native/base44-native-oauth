@@ -339,12 +339,21 @@ This is real auth — treat it like it.
 
 - **`JWT_SECRET` must be long and random** (32+ bytes). Anyone who has it can forge sessions for any user. Never commit it; keep it only in Base44 env vars.
 - **Always verify the Google token server-side.** `googleSignIn` calls Google's `tokeninfo` endpoint — never trust a token the client claims is valid. A client can send anything; Google's confirmation is the gate.
-- **Passwords are PBKDF2-hashed** (100k iterations, per-user random salt). Plaintext passwords are never stored or logged.
+- **Verify the token's `aud` (audience).** `googleSignIn` checks `tokenInfo.aud === GOOGLE_CLIENT_ID`. Without it, *any* valid Google access token with email scope authenticates — including a token minted by a **different app** the victim authorized, letting a malicious app forge a session in yours. Mandatory, not optional.
+- **Use a verified Resend sender in production.** The default `onboarding@resend.dev` is Resend's sandbox and only delivers to your own Resend account email — set the `RESEND_FROM` secret to an address on a domain you verified in Resend, or reset emails silently never reach real users.
+- **Passwords are PBKDF2-hashed** (100k iterations, per-user random salt) and compared **constant-time**, so timing can't leak how much of the hash matched. Plaintext passwords are never stored or logged.
 - **Login errors are generic** ("Invalid email or password") so an attacker can't tell which emails have accounts (no user enumeration).
 - **Password-reset responses are always generic success**, for the same reason — the email tells the real user; the response tells the attacker nothing.
 - **Every protected backend function re-verifies the JWT.** The frontend gate (`ProtectedRoute`) is UX only — real enforcement is server-side, on each call.
 - **Admin functions check `role === 'admin'` on the server**, not just in the UI. Hiding an admin button is not security.
 - **Tokens expire (30 days here).** Shorten it if your app is sensitive; there's no server-side revocation with stateless JWTs, so expiry is your main lever (that, or rotating `JWT_SECRET`, which logs everyone out).
+
+### Known tradeoffs (deferred by design)
+
+These are acceptable for a template but worth hardening before a high-value production launch:
+
+- **Implicit flow (`response_type=token`)** means the Google access token rides through URLs (fragment → deeplink query) before we strip it. It's captured and cleared immediately, so the exposure window is tiny — but auth code + PKCE would keep the token out of URLs entirely. Fine to defer.
+- **No app-level rate limiting** on `authLogin` / `authRequestReset`. If Base44 doesn't throttle at the platform edge, these are open to brute force / email flooding — add per-IP or per-email throttling before scaling.
 
 ---
 
@@ -392,7 +401,7 @@ If you're explaining this to someone, these are the ideas that unlock it:
 Everything per-project lives in exactly three spots (full checklist in [`/src/TEMPLATE_SETUP.md`](./src/TEMPLATE_SETUP.md)):
 
 1. **`src/config/app-config.js`** → `deeplinkScheme` (the only frontend edit)
-2. **Base44 secrets:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `APP_BASE_URL`
+2. **Base44 secrets:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `RESEND_FROM`, `APP_BASE_URL`
 3. **External accounts:** Google Cloud Console redirect URI + Despia scheme/path
 
 ---

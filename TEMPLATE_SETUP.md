@@ -45,7 +45,10 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Google Cloud Console → Credentials |
 | `JWT_SECRET` | Long random string that signs your sessions | Generate one (32+ random chars). **Keep it stable** — changing it logs everyone out |
 | `RESEND_API_KEY` | For password-reset emails | [resend.com](https://resend.com) → API Keys |
+| `RESEND_FROM` | The "from" address for reset emails, e.g. `noreply@yourdomain.com` | An address on a domain you **verified in Resend** |
 | `APP_BASE_URL` | Your app's public Base44 URL, e.g. `https://YOUR-APP.base44.app` | Your Base44 app URL (no trailing slash) |
+
+> 🚨 **`RESEND_FROM` — required before production.** If you leave it unset, emails send from Resend's sandbox address `onboarding@resend.dev`, which **only delivers to your own Resend account email** — real users get nothing. Verify a domain in Resend (Domains → Add Domain) and set `RESEND_FROM` to an address on it.
 
 > ⚠️ `APP_BASE_URL` **must exactly match** the domain you register in Google Console (Step 3). If it's wrong, Google sign-in fails with `redirect_uri_mismatch`. The code falls back to a demo URL if unset — always set your own.
 
@@ -75,6 +78,7 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 - [ ] `GOOGLE_CLIENT_SECRET` secret set
 - [ ] `JWT_SECRET` secret set (long, random, stable)
 - [ ] `RESEND_API_KEY` secret set
+- [ ] `RESEND_FROM` secret set to an address on your **verified** Resend domain (not the sandbox)
 - [ ] `APP_BASE_URL` secret set to your app URL (no trailing slash)
 - [ ] Google Console redirect URI = `APP_BASE_URL` + `/native-callback.html`
 - [ ] Despia scheme + `oauth/auth` path registered

@@ -19,6 +19,13 @@ async function signJwt(payload, secret, expiresInSec = 60 * 60 * 24 * 30) {
 function toHex(buf) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
+// Constant-time string compare — avoids leaking hash-match info via timing.
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
 async function verifyPassword(password, stored) {
   if (!stored || !stored.includes(':')) return false;
   const [saltHex, hashHex] = stored.split(':');
@@ -26,7 +33,7 @@ async function verifyPassword(password, stored) {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
   const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, keyMaterial, 256);
-  return toHex(bits) === hashHex;
+  return timingSafeEqual(toHex(bits), hashHex);
 }
 
 Deno.serve(async (req) => {

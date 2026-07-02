@@ -57,7 +57,10 @@ Deno.serve(async (req) => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'onboarding@resend.dev',
+          // ⚠️ 'onboarding@resend.dev' is Resend's SANDBOX sender — it only delivers to your own
+          // account email and is NOT for production. Set the RESEND_FROM secret to an address on a
+          // domain you've verified in Resend (e.g. 'noreply@yourdomain.com') before going live.
+          from: Deno.env.get('RESEND_FROM') || 'onboarding@resend.dev',
           to: account.email,
           subject: 'Reset your password',
           html,
