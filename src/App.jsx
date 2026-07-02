@@ -1,19 +1,12 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import PageNotFound from './lib/PageNotFound';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from '@/lib/AuthContext';
 import { ActionSheetProvider } from '@/lib/actionSheet';
 import AppFocusHandler from '@/components/AppFocusHandler';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
-import Login from '@/pages/Login';
-import Auth from '@/pages/Auth';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
-import Home from '@/pages/Home';
-import AdminUsers from '@/pages/AdminUsers';
+import AnimatedRoutes from '@/components/AnimatedRoutes';
 
 function App() {
   return (
@@ -23,18 +16,7 @@ function App() {
           <AppFocusHandler />
           <Router>
             <ScrollToTop />
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/oauth/auth" element={<Auth />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-              </Route>
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
+            <AnimatedRoutes />
           </Router>
           <Toaster />
         </ActionSheetProvider>
