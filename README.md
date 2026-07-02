@@ -1,4 +1,18 @@
-# Base44 Project
+# Despia Native Auth Template (on Base44)
+
+This codebase is a **working template for a fully custom authentication system**: native Google Sign-In inside a [Despia](https://despia.com) WebView app, plus your own JWT sessions — all running on [Base44](https://base44.com)'s serverless backend (Deno functions + entities + email).
+
+Instead of Base44's built-in `base44.auth`, this app owns its entire auth stack: users live in a normal `Account` entity you control, sessions are your own signed JWTs, and Google login works natively in Despia via the `oauth://` bridge. You still get Base44's zero-ops backend and database.
+
+**📖 Start here:**
+- [`TEMPLATE_SETUP.md`](./src/TEMPLATE_SETUP.md) — the checklist of what to change to make this app yours (3 spots: config, secrets, external accounts).
+- [`DESPIA_OAUTH.md`](./src/DESPIA_OAUTH.md) — the full mental model and how Despia, Base44, and Google fit together.
+
+> ℹ️ **Keep the Base44 setup below intact.** This project runs *on* Base44 — the CLI, config, and hosted-backend steps are how you run, edit, and publish it. Removing them breaks the project.
+
+---
+
+## Base44 Project
 
 Use this repository to run and edit the app locally, then publish changes back through Base44.
 
