@@ -3,7 +3,6 @@ import { Navigate, Link } from 'react-router-dom'
 import { ChevronLeft, Loader2, Download } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import GlassHeader from '@/components/mobile/GlassHeader'
-import AmbientBackground from '@/components/mobile/AmbientBackground'
 import * as adminApi from '@/lib/adminUsers'
 import UserRow from '@/components/admin/UserRow'
 import LoginsChart from '@/components/admin/LoginsChart'
@@ -66,8 +65,7 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="relative flex flex-col h-full bg-muted/40 overflow-hidden">
-      <AmbientBackground />
+    <div className="relative flex flex-col h-full bg-muted/40">
       <GlassHeader
         title="Users"
         left={
@@ -88,14 +86,14 @@ export default function AdminUsers() {
         }
       />
 
-      <div className="scroll-container relative px-5 pb-safe-bottom" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+      <div className="scroll-container px-5 pb-safe-bottom" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
         <p className="px-1 pt-2 pb-3 text-[13px] text-muted-foreground">
           {accounts.length} account{accounts.length === 1 ? '' : 's'}
         </p>
 
         {!loading && <LoginsChart accounts={accounts} />}
 
-        <div className="rounded-2xl glass-card overflow-hidden mb-6">
+        <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="w-5 h-5 animate-spin" />

@@ -3,7 +3,6 @@ import { Users, LogOut, ShieldCheck, Mail, BadgeCheck } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import GlassHeader from '@/components/mobile/GlassHeader'
 import GlassTabBar from '@/components/mobile/GlassTabBar'
-import AmbientBackground from '@/components/mobile/AmbientBackground'
 import ListRow from '@/components/mobile/ListRow'
 
 export default function Account() {
@@ -12,11 +11,10 @@ export default function Account() {
   const isAdmin = user?.role === 'admin'
 
   return (
-    <div className="relative flex flex-col h-full bg-muted/40 overflow-hidden">
-      <AmbientBackground />
+    <div className="relative flex flex-col h-full bg-muted/40">
       <GlassHeader title="Account" />
 
-      <div className="scroll-container relative px-5" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+      <div className="scroll-container px-5" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
         {/* Profile hero */}
         <div className="flex flex-col items-center text-center pt-6 pb-6">
           <div className="relative">
@@ -27,7 +25,7 @@ export default function Account() {
                 className="w-24 h-24 rounded-full object-cover ring-4 ring-background shadow-lg"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-b from-primary/80 to-primary flex items-center justify-center text-primary-foreground text-3xl font-semibold ring-4 ring-background shadow-lg">
+              <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-foreground/70 text-3xl font-semibold ring-1 ring-black/5 shadow-sm">
                 {user?.full_name?.[0] || user?.email?.[0] || '?'}
               </div>
             )}
@@ -52,7 +50,7 @@ export default function Account() {
         <p className="px-1 pb-2 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground">
           Details
         </p>
-        <div className="rounded-2xl glass-card overflow-hidden">
+        <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
           <ListRow
             icon={Mail}
             iconBg="bg-primary/10"
@@ -70,7 +68,7 @@ export default function Account() {
             <p className="px-1 pt-6 pb-2 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground">
               Admin
             </p>
-            <div className="rounded-2xl glass-card overflow-hidden">
+            <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
               <ListRow
                 icon={Users}
                 iconBg="bg-secondary/15"
@@ -84,7 +82,7 @@ export default function Account() {
         )}
 
         {/* Sign out */}
-        <div className="mt-6 rounded-2xl glass-card overflow-hidden mb-32">
+        <div className="mt-6 rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm mb-32">
           <ListRow
             icon={LogOut}
             iconBg="bg-destructive/10"

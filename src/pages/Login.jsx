@@ -7,7 +7,6 @@ import { signInWithDevice, isNative } from '@/lib/deviceAuth'
 import { haptics } from '@/lib/haptics'
 import { appConfig } from '@/config/app-config'
 import GoogleIcon from '@/components/GoogleIcon'
-import AmbientBackground from '@/components/mobile/AmbientBackground'
 
 const isDespia = isNative()
 
@@ -87,9 +86,8 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex flex-col h-full bg-muted/40 overflow-hidden">
-      <AmbientBackground />
-      <div className="scroll-container relative flex flex-col items-center justify-center px-5 pt-safe-top pb-safe-bottom">
+    <div className="flex flex-col h-full bg-muted/40">
+      <div className="scroll-container flex flex-col items-center justify-center px-5 pt-safe-top pb-safe-bottom">
         <div className="w-full max-w-sm flex flex-col items-center py-10">
           {/* App mark + title */}
           <div className="flex flex-col items-center gap-3 mb-8">
@@ -110,7 +108,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
             {/* Grouped inputs — iOS inset style */}
-            <div className="rounded-2xl glass-card overflow-hidden divide-y divide-border/60">
+            <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm divide-y divide-border/60">
               {mode === 'register' && (
                 <input
                   type="text"
@@ -164,7 +162,7 @@ export default function Login() {
           <div className="w-full flex flex-col gap-3">
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-3 rounded-full px-4 py-3.5 glass-card active:bg-muted/60 active:scale-[0.98] transition-all text-[16px] font-medium text-foreground shadow-sm"
+              className="w-full flex items-center justify-center gap-3 rounded-full px-4 py-3.5 bg-card border border-border/60 shadow-sm active:bg-muted/60 active:scale-[0.98] transition-all text-[16px] font-medium text-foreground shadow-sm"
             >
               <GoogleIcon className="w-5 h-5" />
               Continue with Google
@@ -174,7 +172,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleFaceIdSignIn}
-                className="w-full flex items-center justify-center gap-3 rounded-full px-4 py-3.5 glass-card active:bg-muted/60 active:scale-[0.98] transition-all text-[16px] font-medium text-foreground shadow-sm"
+                className="w-full flex items-center justify-center gap-3 rounded-full px-4 py-3.5 bg-card border border-border/60 shadow-sm active:bg-muted/60 active:scale-[0.98] transition-all text-[16px] font-medium text-foreground shadow-sm"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v2M16 20h2a2 2 0 0 0 2-2v-2" />
