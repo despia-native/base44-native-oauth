@@ -43,7 +43,7 @@ export default function Home() {
         </div>
 
         {/* Info group */}
-        <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm">
+        <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
           <ListRow
             icon={Mail}
             iconBg="bg-primary/10"
@@ -61,7 +61,7 @@ export default function Home() {
             <p className="px-4 pt-6 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Admin
             </p>
-            <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm">
+            <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
               <ListRow
                 icon={Users}
                 iconBg="bg-secondary/15"
@@ -75,7 +75,7 @@ export default function Home() {
         )}
 
         {/* Sign out */}
-        <div className="mt-6 rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm">
+        <div className="mt-6 rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
           <ListRow
             icon={LogOut}
             iconBg="bg-destructive/10"

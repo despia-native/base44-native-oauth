@@ -91,7 +91,7 @@ export default function AdminUsers() {
 
         {!loading && <LoginsChart accounts={accounts} />}
 
-        <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm mb-6">
+        <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -114,7 +114,7 @@ export default function AdminUsers() {
       </div>
 
       <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
-        <AlertDialogContent className="rounded-2xl max-w-[320px]">
+        <AlertDialogContent className="rounded-3xl max-w-[320px]">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this account?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -122,8 +122,8 @@ export default function AdminUsers() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

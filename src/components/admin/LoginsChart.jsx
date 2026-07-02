@@ -24,7 +24,7 @@ export default function LoginsChart({ accounts }) {
   }, [accounts])
 
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-5 mb-4 shadow-sm">
+    <div className="rounded-2xl border border-border/60 bg-card p-5 mb-4 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="w-4 h-4 text-primary" />
         <h2 className="text-[15px] font-semibold text-foreground">Logins per day</h2>

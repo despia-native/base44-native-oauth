@@ -56,14 +56,14 @@ export default function ResetPassword() {
           </p>
 
           {!done && !resetToken && (
-            <div className="mt-8 w-full rounded-xl bg-card border border-border/60 shadow-sm px-4 py-4">
+            <div className="mt-8 w-full rounded-2xl bg-card border border-border/60 shadow-sm px-4 py-4">
               <p className="text-[15px] text-destructive text-center">This reset link is invalid or missing its token.</p>
             </div>
           )}
 
           {!done && resetToken && (
             <form onSubmit={handleSubmit} className="mt-8 w-full flex flex-col gap-4">
-              <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm divide-y divide-border/60">
+              <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm divide-y divide-border/60">
                 <input
                   type="password"
                   required
@@ -85,7 +85,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-primary text-primary-foreground px-4 py-3.5 text-[16px] font-semibold active:opacity-80 transition-opacity disabled:opacity-50 shadow-sm"
+                className="w-full rounded-full bg-primary text-primary-foreground px-4 py-3.5 text-[16px] font-semibold active:opacity-80 active:scale-[0.98] transition-all disabled:opacity-50 shadow-sm"
               >
                 {loading ? 'Updating…' : 'Update Password'}
               </button>

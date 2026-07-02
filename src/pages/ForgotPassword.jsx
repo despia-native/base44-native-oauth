@@ -39,14 +39,14 @@ export default function ForgotPassword() {
           </p>
 
           {sent ? (
-            <div className="mt-8 w-full rounded-xl bg-card border border-border/60 shadow-sm px-4 py-4">
+            <div className="mt-8 w-full rounded-2xl bg-card border border-border/60 shadow-sm px-4 py-4">
               <p className="text-[15px] text-muted-foreground text-center">
                 If an account exists for <span className="font-medium text-foreground">{email}</span>, a reset link is on its way. The link expires in 30 minutes.
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-8 w-full flex flex-col gap-4">
-              <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm">
+              <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm">
                 <input
                   type="email"
                   required
@@ -59,7 +59,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-primary text-primary-foreground px-4 py-3.5 text-[16px] font-semibold active:opacity-80 transition-opacity disabled:opacity-50 shadow-sm"
+                className="w-full rounded-full bg-primary text-primary-foreground px-4 py-3.5 text-[16px] font-semibold active:opacity-80 active:scale-[0.98] transition-all disabled:opacity-50 shadow-sm"
               >
                 {loading ? 'Sending…' : 'Send Reset Link'}
               </button>

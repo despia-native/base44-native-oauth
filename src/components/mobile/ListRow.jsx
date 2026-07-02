@@ -15,7 +15,7 @@ export default function ListRow({
   const content = (
     <>
       {Icon && (
-        <span className={`flex items-center justify-center w-7 h-7 rounded-md ${iconBg}`}>
+        <span className={`flex items-center justify-center w-7 h-7 rounded-lg ${iconBg}`}>
           <Icon className={`w-4 h-4 ${danger ? 'text-destructive' : iconColor}`} />
         </span>
       )}

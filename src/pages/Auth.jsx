@@ -89,7 +89,7 @@ export default function Auth() {
         <button
           type="button"
           onClick={() => { window.location.href = '/' }}
-          className="w-full max-w-sm px-4 py-3.5 rounded-xl bg-primary text-primary-foreground text-[16px] font-semibold active:opacity-80 transition-opacity shadow-sm"
+          className="w-full max-w-sm px-4 py-3.5 rounded-full bg-primary text-primary-foreground text-[16px] font-semibold active:opacity-80 active:scale-[0.98] transition-all shadow-sm"
         >
           Continue to App
         </button>
