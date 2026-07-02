@@ -9,8 +9,10 @@ Deno.serve(async (req) => {
     const { deeplink_scheme } = await req.json();
     const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
 
-    // ✏️ Replace with your Base44 app's public URL if it changes
-    const APP_BASE_URL = 'https://despia-connect-go.base44.app';
+    // 🔧 TEMPLATE: set the APP_BASE_URL secret to your app's public Base44 URL
+    // (Dashboard → Settings → Environment Variables). The fallback below is only
+    // for local convenience — always set the secret in a real project.
+    const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || 'https://despia-connect-go.base44.app';
     // redirectUri must exactly match what's registered in Google Cloud Console — no query params
     const redirectUri = `${APP_BASE_URL}/native-callback.html`;
 

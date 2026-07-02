@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 import * as customAuth from '@/lib/customAuth'
+import { appConfig } from '@/config/app-config'
 
 const isDespia = navigator.userAgent.toLowerCase().includes('despia')
 
@@ -17,7 +18,7 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setError('')
     // Both web and native get a Google access token, then exchange it for our own JWT on /auth.
-    const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: 'myapp' })
+    const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: appConfig.deeplinkScheme })
     const { url } = res.data
     if (isDespia) {
       despia(`oauth://?url=${encodeURIComponent(url)}`)
