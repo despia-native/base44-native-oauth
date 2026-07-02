@@ -4,6 +4,7 @@ import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 import * as customAuth from '@/lib/customAuth'
 import { signInWithDevice, isNative } from '@/lib/deviceAuth'
+import { haptics } from '@/lib/haptics'
 import { appConfig } from '@/config/app-config'
 
 const isDespia = isNative()
@@ -55,15 +56,18 @@ export default function Login() {
     e.preventDefault()
     setError('')
     setLoading(true)
+    haptics.heavy()
     try {
       if (mode === 'register') {
         await customAuth.register({ email, password, full_name: fullName })
       } else {
         await customAuth.login({ email, password })
       }
+      haptics.success()
       window.location.href = '/'
     } catch (err) {
       const msg = err?.response?.data?.error || err?.message || 'Something went wrong'
+      haptics.error()
       setError(msg)
       setLoading(false)
     }
