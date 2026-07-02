@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { ChevronLeft, Loader2, Download } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
+import GlassHeader from '@/components/mobile/GlassHeader'
+import AmbientBackground from '@/components/mobile/AmbientBackground'
 import * as adminApi from '@/lib/adminUsers'
 import UserRow from '@/components/admin/UserRow'
 import LoginsChart from '@/components/admin/LoginsChart'
@@ -64,34 +66,36 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-muted/40">
-      {/* Top bar */}
-      <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
-        <div className="h-11 grid grid-cols-[1fr_auto_1fr] items-center px-2">
-          <Link to="/" className="flex items-center text-primary text-[17px] active:opacity-60 justify-self-start">
+    <div className="relative flex flex-col h-full bg-muted/40 overflow-hidden">
+      <AmbientBackground />
+      <GlassHeader
+        title="Users"
+        left={
+          <Link to="/" className="flex items-center text-primary text-[17px] active:opacity-60 pl-1">
             <ChevronLeft className="w-6 h-6 -ml-1" /> Back
           </Link>
-          <h1 className="text-[17px] font-semibold text-foreground">Users</h1>
+        }
+        right={
           <button
             type="button"
             onClick={handleExport}
             disabled={loading || accounts.length === 0}
-            className="justify-self-end p-2 text-primary active:opacity-60 disabled:opacity-40"
+            className="p-2 text-primary active:opacity-60 disabled:opacity-40"
             aria-label="Export CSV"
           >
             <Download className="w-5 h-5" />
           </button>
-        </div>
-      </header>
+        }
+      />
 
-      <div className="scroll-container px-5 pb-safe-bottom">
-        <p className="px-1 pt-5 pb-3 text-[13px] text-muted-foreground">
+      <div className="scroll-container relative px-5 pb-safe-bottom" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+        <p className="px-1 pt-2 pb-3 text-[13px] text-muted-foreground">
           {accounts.length} account{accounts.length === 1 ? '' : 's'}
         </p>
 
         {!loading && <LoginsChart accounts={accounts} />}
 
-        <div className="rounded-2xl bg-card border border-border/60 overflow-hidden shadow-sm mb-6">
+        <div className="rounded-2xl glass-card overflow-hidden mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="w-5 h-5 animate-spin" />

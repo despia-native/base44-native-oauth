@@ -181,4 +181,34 @@
   .scroll-container::-webkit-scrollbar {
     display: none;
   }
+
+  /* iOS 26 "Liquid Glass" chrome — heavy blur + saturation, inner top highlight */
+  .liquid-glass {
+    background: hsl(var(--background) / 0.6);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow:
+      0 8px 32px rgb(0 0 0 / 0.1),
+      0 1px 2px rgb(0 0 0 / 0.04),
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      inset 0 -1px 0 rgb(255 255 255 / 0.08);
+  }
+  .dark .liquid-glass {
+    background: hsl(var(--background) / 0.55);
+    box-shadow:
+      0 8px 32px rgb(0 0 0 / 0.45),
+      inset 0 1px 0 rgb(255 255 255 / 0.1);
+  }
+
+  /* Softer glass for cards sitting on content */
+  .glass-card {
+    background: hsl(var(--card) / 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow:
+      0 4px 24px rgb(0 0 0 / 0.06),
+      inset 0 1px 0 rgb(255 255 255 / 0.4);
+  }
 }
