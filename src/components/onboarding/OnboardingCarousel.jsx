@@ -16,8 +16,14 @@ export default function OnboardingCarousel({ slides }) {
       <div
         ref={trackRef}
         onScroll={handleScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory scroll-container"
-        style={{ scrollbarWidth: 'none' }}
+        className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehaviorX: 'contain',
+          touchAction: 'pan-x',
+        }}
       >
         {slides.map((slide, i) => (
           <div key={i} className="w-full flex-shrink-0 snap-center flex flex-col items-center px-8 text-center">
