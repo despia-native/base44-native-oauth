@@ -24,7 +24,14 @@ export default function Auth() {
       if (handledRef.current) return
       handledRef.current = true
       setStatus('Verifying your account...')
-      customAuth.loginWithGoogleToken(token)
+      // Link mode: attach the Google identity to the current anonymous account
+      // (set by the "Protect your account" flow) instead of a fresh sign-in.
+      const linkMode = localStorage.getItem('google_link_mode') === '1'
+      localStorage.removeItem('google_link_mode')
+      const authPromise = linkMode
+        ? customAuth.linkWithGoogleToken(token)
+        : customAuth.loginWithGoogleToken(token)
+      authPromise
         .then(async () => {
           await checkUserAuth()
           setStatus('Signed in! Tap Continue to enter the app.')

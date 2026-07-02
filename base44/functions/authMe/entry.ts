@@ -52,6 +52,7 @@ Deno.serve(async (req) => {
         role: account.role,
         avatar_url: account.avatar_url || null,
         email_verified: account.email_verified || false,
+        is_anonymous: account.is_anonymous || false,
       },
     });
   } catch (error) {

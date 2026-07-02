@@ -68,7 +68,8 @@ Deno.serve(async (req) => {
         email: account.email,
         full_name: account.full_name,
         role: account.role,
-        is_anonymous: true,
+        // The device may have since been linked to a real login — report the truth.
+        is_anonymous: account.is_anonymous !== false,
         avatar_url: account.avatar_url || null,
       },
     });
