@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
-import { ArrowLeft, Users, Loader2, Download } from 'lucide-react'
+import { ChevronLeft, Loader2, Download } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import * as adminApi from '@/lib/adminUsers'
 import UserRow from '@/components/admin/UserRow'
@@ -64,39 +64,40 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6 hover:text-foreground transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back
-        </Link>
-
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Users className="w-5 h-5 text-primary" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold font-heading text-foreground">User management</h1>
-            <p className="text-sm text-muted-foreground">{accounts.length} account{accounts.length === 1 ? '' : 's'}</p>
-          </div>
+    <div className="flex flex-col h-full bg-muted/40">
+      {/* Top bar */}
+      <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
+        <div className="h-11 grid grid-cols-[1fr_auto_1fr] items-center px-2">
+          <Link to="/" className="flex items-center text-primary text-[17px] active:opacity-60 justify-self-start">
+            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+          </Link>
+          <h1 className="text-[17px] font-semibold text-foreground">Users</h1>
           <button
             type="button"
             onClick={handleExport}
             disabled={loading || accounts.length === 0}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+            className="justify-self-end p-2 text-primary active:opacity-60 disabled:opacity-40"
+            aria-label="Export CSV"
           >
-            <Download className="w-4 h-4" /> Export
+            <Download className="w-5 h-5" />
           </button>
         </div>
+      </header>
+
+      <div className="scroll-container px-4 pb-safe-bottom">
+        <p className="px-1 pt-5 pb-3 text-[13px] text-muted-foreground">
+          {accounts.length} account{accounts.length === 1 ? '' : 's'}
+        </p>
 
         {!loading && <LoginsChart accounts={accounts} />}
 
-        <div className="rounded-xl border border-border bg-card">
+        <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="w-5 h-5 animate-spin" />
             </div>
           ) : accounts.length === 0 ? (
-            <p className="text-center text-sm text-muted-foreground py-16">No accounts yet.</p>
+            <p className="text-center text-[15px] text-muted-foreground py-16">No accounts yet.</p>
           ) : (
             accounts.map((a) => (
               <UserRow
@@ -113,7 +114,7 @@ export default function AdminUsers() {
       </div>
 
       <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl max-w-[320px]">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this account?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -121,8 +122,8 @@ export default function AdminUsers() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

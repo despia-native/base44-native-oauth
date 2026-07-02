@@ -24,14 +24,14 @@ export default function LoginsChart({ accounts }) {
   }, [accounts])
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 mb-6">
+    <div className="rounded-xl border border-border/60 bg-card p-5 mb-4 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="w-4 h-4 text-primary" />
-        <h2 className="text-sm font-semibold text-foreground">Logins per day</h2>
+        <h2 className="text-[15px] font-semibold text-foreground">Logins per day</h2>
       </div>
 
       {data.length === 0 ? (
-        <p className="text-center text-sm text-muted-foreground py-10">No login activity yet.</p>
+        <p className="text-center text-[15px] text-muted-foreground py-10">No login activity yet.</p>
       ) : (
         <div className="h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">

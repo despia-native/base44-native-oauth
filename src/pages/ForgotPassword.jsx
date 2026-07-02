@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ChevronLeft, KeyRound } from 'lucide-react'
 import * as customAuth from '@/lib/customAuth'
 
 export default function ForgotPassword() {
@@ -17,40 +18,54 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm flex flex-col items-center gap-8">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold font-heading text-foreground">Reset password</h1>
-          <p className="text-sm text-muted-foreground">
+    <div className="flex flex-col h-full bg-muted/40">
+      {/* Top bar */}
+      <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
+        <div className="h-11 flex items-center px-2">
+          <Link to="/login" className="flex items-center text-primary text-[17px] active:opacity-60">
+            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+          </Link>
+        </div>
+      </header>
+
+      <div className="scroll-container flex flex-col items-center px-5 pb-safe-bottom">
+        <div className="w-full max-w-sm flex flex-col items-center pt-10">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+            <KeyRound className="w-7 h-7 text-primary" />
+          </div>
+          <h1 className="text-[24px] font-bold tracking-tight text-foreground text-center">Reset Password</h1>
+          <p className="mt-2 text-[15px] text-muted-foreground text-center">
             {sent ? 'Check your inbox for a reset link.' : "Enter your email and we'll send you a reset link."}
           </p>
+
+          {sent ? (
+            <div className="mt-8 w-full rounded-xl bg-card border border-border/60 shadow-sm px-4 py-4">
+              <p className="text-[15px] text-muted-foreground text-center">
+                If an account exists for <span className="font-medium text-foreground">{email}</span>, a reset link is on its way. The link expires in 30 minutes.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-8 w-full flex flex-col gap-4">
+              <div className="rounded-xl bg-card border border-border/60 overflow-hidden shadow-sm">
+                <input
+                  type="email"
+                  required
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-transparent px-4 py-3.5 text-[15px] text-foreground placeholder:text-muted-foreground outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-primary text-primary-foreground px-4 py-3.5 text-[16px] font-semibold active:opacity-80 transition-opacity disabled:opacity-50 shadow-sm"
+              >
+                {loading ? 'Sending…' : 'Send Reset Link'}
+              </button>
+            </form>
+          )}
         </div>
-
-        {sent ? (
-          <p className="text-sm text-muted-foreground text-center">
-            If an account exists for <span className="font-medium text-foreground">{email}</span>, a reset link is on its way. The link expires in 30 minutes.
-          </p>
-        ) : (
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              {loading ? 'Sending...' : 'Send reset link'}
-            </button>
-          </form>
-        )}
-
-        <Link to="/login" className="text-xs text-muted-foreground">Back to sign in</Link>
       </div>
     </div>
   )

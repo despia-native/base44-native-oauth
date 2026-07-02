@@ -79,19 +79,19 @@ export default function Auth() {
   }, [navigate, checkUserAuth])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 gap-6">
+    <div className="flex flex-col h-full items-center justify-center bg-muted/40 px-6 gap-6 pt-safe-top pb-safe-bottom">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
-        <p className="text-sm text-muted-foreground text-center">{status}</p>
+        <div className="w-8 h-8 border-[3px] border-border border-t-foreground rounded-full animate-spin" />
+        <p className="text-[15px] text-muted-foreground text-center">{status}</p>
       </div>
 
       {ready && (
         <button
           type="button"
           onClick={() => { window.location.href = '/' }}
-          className="w-full max-w-md px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+          className="w-full max-w-sm px-4 py-3.5 rounded-xl bg-primary text-primary-foreground text-[16px] font-semibold active:opacity-80 transition-opacity shadow-sm"
         >
-          Continue to app
+          Continue to App
         </button>
       )}
     </div>
