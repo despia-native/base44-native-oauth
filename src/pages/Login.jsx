@@ -189,17 +189,6 @@ export default function Login() {
   /* ── Onboarding view ────────────────────────────────────────── */
   return (
     <div className="flex flex-col h-full bg-background pt-safe-top pb-safe-bottom">
-      {/* App mark */}
-      <div className="flex justify-center pt-10">
-        <div className="w-16 h-16 rounded-[20px] ember-accent flex items-center justify-center">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-      </div>
-
       {/* Value-prop carousel fills the middle */}
       <div className="flex-1 flex items-center min-h-0">
         <OnboardingCarousel slides={SLIDES} />
