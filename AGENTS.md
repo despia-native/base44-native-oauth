@@ -6,6 +6,17 @@ This is a Base44 app repository. Treat it as user-owned application code, keep c
 
 Start with `README.md` for local setup, environment variables, and publish workflow.
 
+## What This App Is — Custom Auth for Despia (read before touching auth)
+
+This codebase is a **template for a fully custom authentication system**: native Google Sign-In inside a [Despia](https://despia.com) WebView, plus the app's own HS256 JWT sessions — all running on Base44's backend. It deliberately does **not** use Base44's built-in `base44.auth` for login. Users live in a custom `Account` entity, and every login path mints an app-signed JWT.
+
+**Before changing anything auth-related, read these docs:**
+
+- **`TEMPLATE_SETUP.md`** — the per-project checklist (deep-link scheme, secrets, Google/Despia setup).
+- **`DESPIA_OAUTH.md`** — the full mental model: why WebViews break normal OAuth, the two-token flow, how the `oauth://` native bridge and `<scheme>://oauth/auth` deep link differ, JWT sessions, and security notes.
+
+Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
+
 ## Base44 References
 
 - CLI overview: https://docs.base44.com/developers/references/cli/get-started/overview.md
