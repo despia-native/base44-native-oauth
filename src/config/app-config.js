@@ -31,6 +31,19 @@ export const appConfig = {
   // Identifiers → Services IDs. Must match the value in the appleSignIn and
   // appleAuthUrl backend functions (APPLE_SERVICES_ID secret or their fallback).
   appleServicesId: 'com.yourcompany.yourapp.webauth',
+
+  // 🔧 TEMPLATE: RevenueCat settings. Enable RevenueCat in the Despia Editor
+  // (App > Settings > Integrations > RevenueCat) with your iOS + Android Public
+  // SDK Keys, then REBUILD the app — the SDK compiles into the binary.
+  revenuecat: {
+    // Entitlement id configured in RevenueCat (Entitlements > + New)
+    entitlementId: 'premium',
+    // Offering id shown by the native paywall ('default' = your default offering)
+    offering: 'default',
+    // Web Purchase Link base (no trailing slash) — the user id gets appended.
+    // From RevenueCat: Paywalls > Web Purchase Links.
+    webPurchaseUrl: 'https://pay.rev.cat/your_token',
+  },
 }
 
 // Full deep link Despia sends back into the WebView, e.g. "myapp://oauth/auth".

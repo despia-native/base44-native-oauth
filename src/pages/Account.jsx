@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Users, LogOut, ShieldCheck, Mail, BadgeCheck, UserPlus, ChevronRight } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import ListRow from '@/components/mobile/ListRow'
+import PremiumSection from '@/components/premium/PremiumSection'
 
 export default function Account() {
   const { user, logout } = useAuth()
@@ -83,6 +84,9 @@ export default function Account() {
             </div>
           </>
         )}
+
+        {/* Premium / subscription */}
+        <PremiumSection />
 
         {/* Admin group */}
         {isAdmin && (
