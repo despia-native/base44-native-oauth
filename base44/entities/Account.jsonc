@@ -12,11 +12,15 @@
     },
     "password_hash": {
       "type": "string",
-      "description": "PBKDF2 hash in the form salt:derivedKey (hex). Empty for Google-only and anonymous accounts."
+      "description": "PBKDF2 hash in the form salt:derivedKey (hex). Empty for Google-only, Apple-only and anonymous accounts."
     },
     "google_id": {
       "type": "string",
       "description": "Google 'sub' identifier when the account is linked to Google"
+    },
+    "apple_id": {
+      "type": "string",
+      "description": "Apple 'sub' identifier when the account is linked to Sign In with Apple"
     },
     "device_id": {
       "type": "string",

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, Layers, Cloud, ShieldCheck, Mail } from 'lucide-react'
+import { ChevronLeft, Layers, Cloud, ShieldCheck, Mail, Apple } from 'lucide-react'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 import * as customAuth from '@/lib/customAuth'
 import { signInWithDevice, isNative } from '@/lib/deviceAuth'
+import { signInWithApple } from '@/lib/appleAuth'
 import { haptics } from '@/lib/haptics'
 import { appConfig } from '@/config/app-config'
 import GoogleIcon from '@/components/GoogleIcon'
@@ -71,6 +72,19 @@ export default function Login() {
       despia(`oauth://?url=${encodeURIComponent(url)}`)
     } else {
       window.location.href = url
+    }
+  }
+
+  const handleAppleSignIn = async () => {
+    setError('')
+    try {
+      const result = await signInWithApple()
+      if (!result) return // Android: sign-in continues via the deeplink → /auth flow
+      await customAuth.loginWithAppleToken(result.idToken, result.fullName)
+      window.location.href = '/'
+    } catch (err) {
+      if (err?.error === 'popup_closed_by_user') return
+      setError(err?.response?.data?.error || err?.message || 'Apple sign-in failed')
     }
   }
 
@@ -204,6 +218,15 @@ export default function Login() {
         >
           <GoogleIcon className="w-5 h-5" />
           Continue with Google
+        </button>
+
+        <button
+          type="button"
+          onClick={handleAppleSignIn}
+          className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
+        >
+          <Apple className="w-5 h-5 fill-current" />
+          Continue with Apple
         </button>
 
         <button

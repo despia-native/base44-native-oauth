@@ -25,6 +25,12 @@ export const appConfig = {
   //   - the "Allowed path" in Despia
   // Most projects never need to change this.
   deeplinkPath: 'auth',
+
+  // 🔧 TEMPLATE: your Apple "Sign In with Apple" Services ID (public client id),
+  // e.g. 'com.yourcompany.yourapp.webauth' — created in Apple Developer Console →
+  // Identifiers → Services IDs. Must match the value in the appleSignIn and
+  // appleAuthUrl backend functions (APPLE_SERVICES_ID secret or their fallback).
+  appleServicesId: 'com.yourcompany.yourapp.webauth',
 }
 
 // Full deep link Despia sends back into the WebView, e.g. "myapp://oauth/auth".

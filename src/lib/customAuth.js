@@ -50,6 +50,13 @@ export async function loginWithGoogleToken(google_token) {
   return data.account;
 }
 
+// Apple: exchange the verified Apple id_token for our own JWT.
+export async function loginWithAppleToken(apple_id_token, full_name = '') {
+  const data = await invoke('appleSignIn', { apple_id_token, full_name });
+  setToken(data.token);
+  return data.account;
+}
+
 // Link an anonymous device account to email/password — keeps all account data.
 export async function linkAccount({ email, password, full_name }) {
   const data = await invoke('authLinkAccount', { email, password, full_name });

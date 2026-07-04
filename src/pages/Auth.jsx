@@ -8,7 +8,7 @@ import { readFromUrl, consumePendingToken } from '@/lib/deeplinkToken'
 // React mounted) OR still be sitting in the live URL. Check both.
 function extractFromUrl() {
   const stashed = consumePendingToken()
-  if (stashed.token || stashed.error) return stashed
+  if (stashed.token || stashed.idToken || stashed.error) return stashed
   return readFromUrl()
 }
 
@@ -20,7 +20,7 @@ export default function Auth() {
   const handledRef = useRef(false)
 
   useEffect(() => {
-    const handleToken = (token) => {
+    const handleToken = ({ token, idToken }) => {
       if (handledRef.current) return
       handledRef.current = true
       setStatus('Verifying your account...')
@@ -28,9 +28,11 @@ export default function Auth() {
       // (set by the "Protect your account" flow) instead of a fresh sign-in.
       const linkMode = localStorage.getItem('google_link_mode') === '1'
       localStorage.removeItem('google_link_mode')
-      const authPromise = linkMode
-        ? customAuth.linkWithGoogleToken(token)
-        : customAuth.loginWithGoogleToken(token)
+      const authPromise = idToken
+        ? customAuth.loginWithAppleToken(idToken) // Apple (Android deeplink flow)
+        : linkMode
+          ? customAuth.linkWithGoogleToken(token)
+          : customAuth.loginWithGoogleToken(token)
       authPromise
         .then(async () => {
           await checkUserAuth()
@@ -46,15 +48,15 @@ export default function Auth() {
 
     const tryExtract = () => {
       if (handledRef.current) return true
-      const { token, error } = extractFromUrl()
+      const { token, idToken, error } = extractFromUrl()
       if (error) {
         handledRef.current = true
         setStatus('Sign-in error: ' + error)
         setTimeout(() => navigate('/login'), 3000)
         return true
       }
-      if (token) {
-        handleToken(token)
+      if (token || idToken) {
+        handleToken({ token, idToken })
         return true
       }
       return false

@@ -3,64 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signing you in…</title>
+  <title>Completing sign in...</title>
   <style>
-    html, body { height: 100%; margin: 0; }
-    body {
-      display: flex; align-items: center; justify-content: center;
-      font-family: system-ui, -apple-system, sans-serif; background: #fff; color: #555;
-      padding: 24px; box-sizing: border-box;
-    }
-    .box { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 16px; }
-    h1 { font-size: 18px; margin: 0; color: #111; }
-    p { font-size: 13px; margin: 0; color: #666; }
-    label { font-size: 12px; color: #888; }
-    textarea {
-      width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace;
-      font-size: 12px; padding: 10px; border: 1px solid #ddd; border-radius: 8px;
-      background: #f7f7f7; resize: none; word-break: break-all;
-    }
-    button {
-      padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
-      cursor: pointer; background: #111; color: #fff;
-    }
-    button.secondary { background: #eee; color: #111; }
-    .row { display: flex; gap: 8px; }
-    .row button { flex: 1; }
+    body { margin: 0; display: flex; align-items: center; justify-content: center;
+           min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+           background: #fff; color: #888; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Almost there</h1>
-    <p>Tap the button below to return to the app and finish signing in.</p>
-    <button id="continue">Continue to app</button>
-  </div>
-
+  <p>Completing sign in...</p>
   <script>
     (function () {
-      var hash = new URLSearchParams(window.location.hash.substring(1));
-      var query = new URLSearchParams(window.location.search);
+      // OAuth providers (Google implicit flow, Apple fragment mode) return tokens
+      // in the URL hash. The deeplink scheme travels via `state`.
+      var query = new URLSearchParams(window.location.search)
+      var hash = new URLSearchParams(window.location.hash.substring(1))
 
-      var token = hash.get('access_token') || query.get('access_token');
-      var error = hash.get('error') || query.get('error');
-      var scheme = hash.get('state') || query.get('state') || 'myapp'; // deeplink scheme
+      var scheme = hash.get('state') || query.get('state') || query.get('deeplink_scheme')
+      if (!scheme) { document.body.textContent = 'Missing deeplink scheme.'; return }
 
-      var payload = token ? ('token=' + encodeURIComponent(token))
-                          : ('error=' + encodeURIComponent(error || 'no_token'));
-      // Path-based deep links work in the WebView (verified: unknown paths hit the 404 route).
-      // Target the /oauth/auth path which renders <Auth />, token in a QUERY param.
-      var deeplink = scheme + '://oauth/auth?' + payload;
+      var accessToken = hash.get('access_token') // Google
+      var idToken = hash.get('id_token')         // Apple
+      var error = hash.get('error') || query.get('error')
 
-      // Redirect ONLY on button click.
-      document.getElementById('continue').addEventListener('click', function () {
-        var a = document.createElement('a');
-        a.href = deeplink;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function () { window.location.href = deeplink; }, 150);
-      });
-    })();
+      // The oauth/ prefix is required — it tells Despia to close the tab and
+      // navigate the WebView to /auth with these params.
+      if (accessToken) {
+        window.location.href = scheme + '://oauth/auth?access_token=' + encodeURIComponent(accessToken)
+      } else if (idToken) {
+        window.location.href = scheme + '://oauth/auth?id_token=' + encodeURIComponent(idToken)
+      } else {
+        window.location.href = scheme + '://oauth/auth?error=' + encodeURIComponent(error || 'no_token')
+      }
+    })()
   </script>
 </body>
 </html>
