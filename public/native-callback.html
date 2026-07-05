@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Signing you in…</title>
 </head>
-<body style="margin:0;background:#0d0c10;color:#f4f2ee;font-family:-apple-system,sans-serif">
-  <p style="text-align:center;margin-top:45vh;font-size:15px">Signing you in…</p>
+<body style="margin:0;background:#0d0c10;color:#f4f2ee;font-family:-apple-system,sans-serif;text-align:center">
+  <p style="margin-top:42vh;font-size:15px">Signing you in…</p>
+  <p><a id="continue" style="display:none;color:#ff5c1f;font-size:16px;font-weight:600;text-decoration:none">Continue to app</a></p>
   <script>
     // Google OAuth callback — authorization code flow.
-    // The one-time code arrives as a QUERY param (?code=...). We forward it to
-    // the app; the backend exchanges it for tokens using the client secret, so
-    // no access token ever appears in a URL.
+    // The one-time code arrives as a QUERY param (?code=...&state=<scheme>).
+    // We forward the code into the app; the backend exchanges it for tokens using
+    // the client secret, so no access token ever appears in any URL.
     var q = new URLSearchParams(location.search);
     var code = q.get('code');
     var error = q.get('error');
@@ -23,11 +24,16 @@
     var query = params.toString();
 
     if (scheme && /^[a-z][a-z0-9+.-]*$/i.test(scheme)) {
-      // Native: bounce back into the app via its deep-link scheme.
-      location.href = scheme + '://auth?' + query;
+      // Native: bounce back into the app via its deep link (Despia path: oauth/auth).
+      var deeplink = scheme + '://oauth/auth?' + query;
+      location.href = deeplink;
+      // Some browsers require a user gesture for custom schemes — show a button too.
+      var btn = document.getElementById('continue');
+      btn.href = deeplink;
+      btn.style.display = 'inline-block';
       // Web fallback: in a normal browser tab the custom scheme is a no-op,
       // so after a moment continue to the in-app /auth page on this origin.
-      setTimeout(function () { location.replace('/auth?' + query); }, 1200);
+      setTimeout(function () { location.replace('/auth?' + query); }, 1500);
     } else {
       location.replace('/auth?' + query);
     }

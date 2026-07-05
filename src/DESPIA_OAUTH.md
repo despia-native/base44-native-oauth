@@ -9,7 +9,7 @@
 - **Users live in a custom `Account` entity** you fully own (CRUD, custom fields, analytics).
 - **Sessions are your own HS256 JWTs**, signed by backend functions with `JWT_SECRET`.
 - **Base44's built-in auth (`base44.auth`) is not used for login** — Base44 provides only the serverless backend, database, and email.
-- **Native Google Sign-In works in Despia** via the `oauth://` bridge → `native-callback.html` → deeplink → `Auth.jsx` → `googleSignIn` backend → our JWT.
+- **Native Google Sign-In works in Despia** via the `oauth://` bridge → `native-callback.html` (single-use auth code) → deeplink → `Auth.jsx` → `googleSignIn` backend (code exchange with Google, server-side) → our JWT.
 
 ### The moving parts
 
@@ -31,7 +31,7 @@ Base44's built-in auth can't create users programmatically, can't fully control 
 
 - **The mental model** — why a WebView breaks normal OAuth, the two-token concept, what a JWT session actually is, and why Base44 is your backend (not your auth).
 - **How Despia + Base44 fit together** — who owns which layer (transport vs. compute vs. identity).
-- **Part 1 — native Google sign-in in Despia** — full flow, clean redirect URI, boot-time token capture, why implicit flow.
+- **Part 1 — native Google sign-in in Despia** — full flow, clean redirect URI, boot-time code capture, why the authorization code flow.
 - **Part 2 — the custom auth system** — `Account` data model, JWT sessions, PBKDF2 passwords, every backend function.
 - **Guided walkthrough with checkpoints** — prove each layer works before adding the next.
 - **Security notes**, **when NOT to use this**, a **teaching cheat-sheet**, troubleshooting table, and per-project changes.

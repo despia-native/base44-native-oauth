@@ -29,8 +29,8 @@ Auth depends on server-side secrets (environment variables on the backend functi
 | Secret | Purpose | Required |
 |---|---|---|
 | `JWT_SECRET` | The signing key for our HS256 tokens. Every token is signed **and** verified with this exact value. | **Yes — critical** |
-| `GOOGLE_CLIENT_ID` | Validates that a Google access token was issued for *our* app (audience check). | For Google sign-in |
-| `GOOGLE_CLIENT_SECRET` | Used in the Google OAuth token exchange. | For Google sign-in |
+| `GOOGLE_CLIENT_ID` | Audience check — the Google `id_token` from the code exchange must be issued for *our* app. | For Google sign-in |
+| `GOOGLE_CLIENT_SECRET` | Exchanges the single-use OAuth authorization code at Google's token endpoint (server-side only). | For Google sign-in |
 | `RESEND_API_KEY` | Sends the password-reset email. | For password reset |
 
 ### 2.1 `JWT_SECRET` — the most important one

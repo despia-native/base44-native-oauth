@@ -13,7 +13,7 @@ This codebase is a **template for a fully custom authentication system**: native
 **Before changing anything auth-related, read these docs:**
 
 - **`TEMPLATE_SETUP.md`** — the per-project checklist (deep-link scheme, secrets, Google/Despia setup).
-- **`DESPIA_OAUTH.md`** — the full mental model: why WebViews break normal OAuth, the two-token flow, how the `oauth://` native bridge and `<scheme>://oauth/auth` deep link differ, JWT sessions, and security notes.
+- **`DESPIA_OAUTH.md`** — the full mental model: why WebViews break normal OAuth, the authorization-code exchange flow (single-use Google code → server-side exchange → our JWT), how the `oauth://` native bridge and `<scheme>://oauth/auth` deep link differ, JWT sessions, and security notes.
 
 Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
 

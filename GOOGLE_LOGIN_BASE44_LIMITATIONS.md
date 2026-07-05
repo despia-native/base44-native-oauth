@@ -48,7 +48,7 @@ pattern for native apps is:
 1. Open the **system browser** (Despia's `oauth://` command) for the Google consent
    screen.
 2. Google redirects to a callback that ultimately fires a **custom-scheme deep
-   link** (`app.scheme://auth?token=...`) to re-enter the app.
+   link** (`app.scheme://oauth/auth?code=...`) to re-enter the app.
 
 Base44's flow cannot participate in step 2:
 
@@ -129,13 +129,15 @@ Account id, `exp` enforced) rather than a platform token:
 1. **`googleAuthUrl`** — builds `https://accounts.google.com/o/oauth2/v2/auth` with
    our own `GOOGLE_CLIENT_ID`, with a `redirect_uri` that lands on our callback and
    fires the Despia deep-link scheme back into the app.
-2. The system browser completes consent; the deep link delivers the Google token to
-   the in-app `/auth` page (with event-listener + polling handling, since the
-   WebView receives it as a URL/history change).
-3. **`googleSignIn`** — validates the token against Google's
-   `https://oauth2.googleapis.com/tokeninfo`, checks that `aud` equals our client
-   ID (prevents token-substitution attacks), find-or-creates the `Account` by
-   `google_id`/email, updates `last_login_at`, then signs and returns our JWT.
+2. The system browser completes consent; the deep link delivers a **single-use
+   authorization code** (`response_type=code`) to the in-app `/auth` page (with
+   event-listener + polling handling, since the WebView receives it as a
+   URL/history change). No Google access token ever appears in any URL.
+3. **`googleSignIn`** — exchanges the code server-side at
+   `https://oauth2.googleapis.com/token` using `GOOGLE_CLIENT_SECRET`, reads the
+   verified identity from the returned `id_token`, checks that `aud` equals our
+   client ID (prevents token-substitution attacks), find-or-creates the `Account`
+   by `google_id`/email, updates `last_login_at`, then signs and returns our JWT.
 4. The client stores the JWT in localStorage **and** the Despia secure vault
    (iOS Keychain) — surviving WebView storage purges and enabling Face ID re-entry.
    Platform sessions support neither (cookie/browser-storage bound, no export API).

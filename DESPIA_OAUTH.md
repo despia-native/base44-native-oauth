@@ -49,12 +49,12 @@ This trips everyone up. Two completely different tokens exist in this flow:
 
 | Token | Who issues it | What it proves | What you do with it |
 |---|---|---|---|
-| **Google access token** (`ya29...`) | Google | "This person is a real Google user with this email" | Send it to your backend **once**, then throw it away. It is **not** a session. |
+| **Google authorization code** (`4/0A...`) | Google | "This person just proved their Google identity — once" | Send it to your backend **once**. Single-use, expires in minutes, useless without the server-held client secret. |
 | **Your app JWT** | Your `googleSignIn` / `authLogin` backend | "This person is logged into *your* app as this Account" | Store it, and send it with every request. **This is the session.** |
 
-The Google token is a *proof of identity for one moment*. Your JWT is the *ongoing session*. The whole point of the `googleSignIn` backend function is to **trade the first for the second**: verify the Google token with Google, find/create the Account, and mint your own JWT.
+The code is a *one-time proof of identity*. Your JWT is the *ongoing session*. The whole point of the `googleSignIn` backend function is to **trade the first for the second**: exchange the code with Google server-side (using `GOOGLE_CLIENT_SECRET`), read the verified identity from the returned `id_token`, find/create the Account, and mint your own JWT.
 
-> If you ever find yourself trying to "log in with the Google token directly," stop — that's the confusion. The Google token never becomes the session.
+> If you ever find yourself trying to "log in with the Google code directly," stop — that's the confusion. The code never becomes the session, and no Google access token ever reaches the frontend at all.
 
 ### 3. A "session" here is just a signed string you trust
 
@@ -111,7 +111,7 @@ Base44's built-in auth (`base44.auth`) is fast to start with but limited. This c
 │                                                               │
 │  authRegister      email/pw → hash → Account.create → JWT    │
 │  authLogin         verify pw → JWT                            │
-│  googleSignIn      verify Google token → find/create → JWT   │
+│  googleSignIn      exchange auth code → find/create → JWT    │
 │  authMe            verify JWT → return Account                │
 │  authRequestReset  make reset token → Resend email           │
 │  authResetPassword verify reset token → new pw hash          │
@@ -164,41 +164,47 @@ despia('oauth://?url=<google-oauth-url>')
         │  Despia opens a SECURE in-app browser → Google Sign-In UI
         ▼
 User signs in → Google redirects to:
-   https://your-app.base44.app/native-callback.html#access_token=ya29...&state=myapp
+   https://your-app.base44.app/native-callback.html?code=4/0A...&state=myapp
         │
         ▼
-native-callback.html reads the token + scheme, shows "Continue to app",
-fires the deeplink:  myapp://oauth/auth?token=ya29...
+native-callback.html reads the code + scheme, shows "Continue to app",
+fires the deeplink:  myapp://oauth/auth?code=4/0A...
         │
         ▼
-Despia intercepts the deeplink → WebView navigates to /oauth/auth?token=ya29...
+Despia intercepts the deeplink → WebView navigates to /oauth/auth?code=4/0A...
         │
         ▼
-Auth.jsx → customAuth.loginWithGoogleToken(googleToken)
-        │  → backend googleSignIn: verifies the Google token with Google,
-        │    finds/creates the Account, returns OUR OWN JWT
+Auth.jsx → customAuth.loginWithGoogleCode(code)
+        │  → backend googleSignIn: exchanges the code with Google
+        │    (GOOGLE_CLIENT_SECRET, server-side), reads the identity from the
+        │    id_token, finds/creates the Account, returns OUR OWN JWT
         ▼
 ✅ JWT stored in localStorage, AuthContext refreshed, user enters the app
 ```
 
-> **Key insight:** Google's implicit flow returns a **Google** access token. That's not a session — we send it to our `googleSignIn` backend function, which verifies it with Google, finds or creates the `Account`, and issues **our own JWT**. That JWT is the real session.
+> **Key insight:** the authorization code is not a session — it's a single-use ticket. Our `googleSignIn` backend function exchanges it with Google (only the backend holds the client secret), finds or creates the `Account`, and issues **our own JWT**. That JWT is the real session. No Google access token ever travels through a URL or reaches the frontend.
 
 ### Critical: Redirect URI Must Be Clean (No Query Params)
 
 Google requires the redirect URI to **exactly match** what's registered in Google Cloud Console — including any query string.
 
-- ✅ **Correct:** register `https://your-app.base44.app/native-callback.html` (no query string), and pass the deeplink scheme via the OAuth `state` param. Google returns `state` in the hash, so the callback page can read it alongside the token.
+- ✅ **Correct:** register `https://your-app.base44.app/native-callback.html` (no query string), and pass the deeplink scheme via the OAuth `state` param. Google returns `state` in the query string, so the callback page can read it alongside the code.
 - ❌ **Wrong:** `...native-callback.html?deeplink_scheme=myapp` — forces you to register that exact query string; fragile and breaks if the scheme changes.
 
 ### Critical: Boot-Time Token Capture
 
-The static host may collapse a deep-linked path like `/oauth/auth?token=...` down to `/` **before React mounts**. If that happens, the protected-root guard fires and bounces the user to `/login` before the token is ever read.
+The static host may collapse a deep-linked path like `/oauth/auth?code=...` down to `/` **before React mounts**. If that happens, the protected-root guard fires and bounces the user to `/login` before the code is ever read.
 
-**Fix (in `main.jsx`):** before React mounts, check for a token anywhere in the URL. If one is present, stash it in `sessionStorage` and rewrite the URL to `/auth` (a public route). Now the guard can never intercept a token-bearing visit. `Auth.jsx` then consumes the stashed token (or reads it live, since the native WebView can swap the URL without reloading).
+**Fix (in `main.jsx`):** before React mounts, check for a code/token anywhere in the URL. If one is present, stash it in `sessionStorage` and rewrite the URL to `/auth` (a public route). Now the guard can never intercept a code-bearing visit. `Auth.jsx` then consumes the stashed code (or reads it live, since the native WebView can swap the URL without reloading).
 
-### Why `response_type=token` (Implicit Flow)
+### Why `response_type=code` (Authorization Code Flow)
 
-`native-callback.html` is a **fully static** file — no server, no backend calls. Google must return the token directly in the URL hash (`#access_token=...`), which is what `response_type=token` does; `state` (your deeplink scheme) comes back in the hash too. `response_type=code` would return a code the static page can't exchange. **Do not change `response_type`.**
+Google returns a single-use **authorization code** as a query param (`?code=...&state=myapp`) on `native-callback.html`. The static page doesn't — and can't — exchange it; it just forwards the code into the app via the deep link. The **backend** (`googleSignIn`) exchanges it at `https://oauth2.googleapis.com/token` using `GOOGLE_CLIENT_SECRET` and reads the verified identity from Google's signed `id_token`.
+
+Why this beats the implicit flow (`response_type=token`):
+- **No access token ever appears in a URL** — only a code that is single-use, expires in minutes, and is useless without the server-held client secret.
+- The identity comes from the `id_token`, returned directly to the backend over TLS.
+- Google has deprecated the implicit flow for new integrations; the code flow is the current recommendation.
 
 ---
 
@@ -240,7 +246,7 @@ Registration hashes with PBKDF2 (100k iterations, SHA-256, random 16-byte salt),
 |---|---|
 | `authRegister` | Validate + hash password → `Account.create` → return JWT |
 | `authLogin` | Verify password (generic error, no user enumeration) → return JWT |
-| `googleSignIn` | Verify Google token with Google → find/create `Account` → return JWT |
+| `googleSignIn` | Exchange auth code with Google (client secret, server-side) → read `id_token` → find/create `Account` → return JWT |
 | `authMe` | Verify JWT → return current `Account` |
 | `authRequestReset` | Generate reset token → email via Resend (always generic success) |
 | `authResetPassword` | Verify reset token → set new password hash |
@@ -256,9 +262,9 @@ All use `base44.asServiceRole.entities.Account` and never touch Base44's built-i
 | `src/lib/customAuth.js` | Token storage + thin wrappers over each backend function |
 | `src/lib/AuthContext.jsx` | Calls `authMe` on boot, holds `user` / loading state app-wide |
 | `src/components/ProtectedRoute.jsx` | Gates routes on the auth state |
-| `src/lib/deeplinkToken.js` | Captures/stashes the OAuth token at boot |
+| `src/lib/deeplinkToken.js` | Captures/stashes the OAuth code at boot |
 | `src/pages/Login.jsx` | Email/pw + Google (native vs web branch) |
-| `src/pages/Auth.jsx` | Consumes the Google token, exchanges it for our JWT |
+| `src/pages/Auth.jsx` | Consumes the Google auth code, exchanges it (via `googleSignIn`) for our JWT |
 | `src/pages/ForgotPassword.jsx` / `ResetPassword.jsx` | Password reset UI |
 | `src/pages/AdminUsers.jsx` | Admin dashboard (list, roles, delete, CSV export, login chart) |
 
@@ -338,8 +344,8 @@ Now tap "Sign in with Google" inside the Despia app. Trace the flow from [Part 1
 This is real auth — treat it like it.
 
 - **`JWT_SECRET` must be long and random** (32+ bytes). Anyone who has it can forge sessions for any user. Never commit it; keep it only in Base44 env vars.
-- **Always verify the Google token server-side.** `googleSignIn` calls Google's `tokeninfo` endpoint — never trust a token the client claims is valid. A client can send anything; Google's confirmation is the gate.
-- **Verify the token's `aud` (audience).** `googleSignIn` checks `tokenInfo.aud === GOOGLE_CLIENT_ID`. Without it, *any* valid Google access token with email scope authenticates — including a token minted by a **different app** the victim authorized, letting a malicious app forge a session in yours. Mandatory, not optional.
+- **The Google exchange happens server-side only.** `googleSignIn` trades the single-use code at Google's token endpoint using `GOOGLE_CLIENT_SECRET` — a leaked code is useless without the secret, and no Google access token ever reaches the frontend or a URL.
+- **Verify the `id_token`'s `aud` (audience).** `googleSignIn` checks `aud === GOOGLE_CLIENT_ID`. Without it, a credential minted for a **different app** could forge a session in yours. Mandatory, not optional.
 - **Use a verified Resend sender in production.** The default `onboarding@resend.dev` is Resend's sandbox and only delivers to your own Resend account email — set the `RESEND_FROM` secret to an address on a domain you verified in Resend, or reset emails silently never reach real users.
 - **Passwords are PBKDF2-hashed** (100k iterations, per-user random salt) and compared **constant-time**, so timing can't leak how much of the hash matched. Plaintext passwords are never stored or logged.
 - **Login errors are generic** ("Invalid email or password") so an attacker can't tell which emails have accounts (no user enumeration).
@@ -352,7 +358,7 @@ This is real auth — treat it like it.
 
 These are acceptable for a template but worth hardening before a high-value production launch:
 
-- **Implicit flow (`response_type=token`)** means the Google access token rides through URLs (fragment → deeplink query) before we strip it. It's captured and cleared immediately, so the exposure window is tiny — but auth code + PKCE would keep the token out of URLs entirely. Fine to defer.
+- ~~Implicit flow~~ **Resolved:** the app now uses the authorization code flow — tokens never travel through URLs; only a single-use code does. (PKCE could still be layered on top for defense-in-depth, but with the server-side client-secret exchange it adds little here.)
 - **No app-level rate limiting** on `authLogin` / `authRequestReset`. If Base44 doesn't throttle at the platform edge, these are open to brute force / email flooding — add per-IP or per-email throttling before scaling.
 
 ---
@@ -374,8 +380,8 @@ Reach for **this custom system** when you need native OAuth in Despia, full cont
 If you're explaining this to someone, these are the ideas that unlock it:
 
 1. **Despia = WebView.** Normal OAuth redirects escape the WebView; that's the root problem.
-2. **Two tokens.** Google token = one-time proof. Your JWT = the session. Trade one for the other on the backend.
-3. **Deep links carry the token home.** `myapp://oauth/auth?token=...` is how the native shell hands the token back to the WebView.
+2. **Code vs session.** Google auth code = one-time proof, exchanged server-side. Your JWT = the session. Trade one for the other on the backend.
+3. **Deep links carry the code home.** `myapp://oauth/auth?code=...` is how the native shell hands the result back to the WebView.
 4. **The JWT is the session** — a signed string your backend trusts because only it knows `JWT_SECRET`.
 5. **Base44 is backend, not auth.** Functions + `Account` entity + Resend; `base44.auth` is never used for login.
 6. **Verify server-side, always.** Google token verified with Google; JWT verified on every call; roles checked on the server.
@@ -387,8 +393,8 @@ If you're explaining this to someone, these are the ideas that unlock it:
 | Symptom | Cause | Fix |
 |---|---|---|
 | `redirect_uri_mismatch` from Google | Redirect URI has query params or doesn't match | Register exactly `https://YOUR-APP.base44.app/native-callback.html` |
-| Instantly bounced to `/login` after Google | Host collapsed `/oauth/auth?token=` to `/` before React mounted | Boot-time token capture in `main.jsx` rewrites to `/auth` first |
-| Stuck on "Signing you in…" spinner | Google token not exchanged | Call `customAuth.loginWithGoogleToken()` → `googleSignIn` backend |
+| Instantly bounced to `/login` after Google | Host collapsed `/oauth/auth?code=` to `/` before React mounted | Boot-time capture in `main.jsx` rewrites to `/auth` first |
+| Stuck on "Signing you in…" spinner | Auth code not exchanged | `customAuth.loginWithGoogleCode()` → `googleSignIn` exchanges it with Google |
 | `native-callback.html` 404 | File not in `public/` | Must be `public/native-callback.html` |
 | Deeplink not firing on device | Scheme not registered in Despia | Add scheme + `oauth/auth` path in Despia settings |
 | `Invalid or expired token` on every call | `JWT_SECRET` missing/changed | Set a stable `JWT_SECRET`; changing it invalidates all sessions |
