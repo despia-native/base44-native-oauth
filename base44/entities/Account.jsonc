@@ -57,5 +57,19 @@
   },
   "required": [
     "email"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "__service_only__"
+      }
+    },
+    "read": false,
+    "update": {
+      "user_condition": {
+        "role": "__service_only__"
+      }
+    },
+    "delete": false
+  }
 }
