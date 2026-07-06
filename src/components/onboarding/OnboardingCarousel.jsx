@@ -47,9 +47,7 @@ export default function OnboardingCarousel({ slides }) {
             key={i}
             role="tab"
             aria-selected={i === active}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === active ? 'w-6 bg-primary' : 'w-2 ember-track'
-            }`}
+            className={`ember-dot ${i === active ? 'on' : ''}`}
           />
         ))}
       </div>

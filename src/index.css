@@ -414,4 +414,83 @@
     background: var(--card-grad);
     box-shadow: var(--card-shadow);
   }
+
+  /* ── Kit interaction layer — 1:1 CSS-only animations ─────────────
+     Every animation below is pure CSS (transitions/keyframes on
+     compositor-friendly transform/translate/opacity). */
+
+  /* Spring press on every interactive material (kit .btn) */
+  .ember-press,
+  .ember-primary,
+  .ember-accent,
+  .ember-danger {
+    transition: transform .3s var(--spring), box-shadow .15s, opacity .2s;
+  }
+  .ember-press:active,
+  .ember-primary:active,
+  .ember-accent:active,
+  .ember-danger:active {
+    transform: scale(.95);
+  }
+
+  /* Page dots (kit .dots) — active dot stretches into an ember pill */
+  .ember-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: 62.4375rem;
+    background: var(--track);
+    box-shadow: var(--track-inset);
+    transition: width .3s var(--spring), background .2s;
+  }
+  .ember-dot.on {
+    width: 1.375rem;
+    background: linear-gradient(180deg, var(--ember-hi), var(--ember-lo));
+    box-shadow: inset 0 0.0625rem 0.0625rem rgba(255,255,255,.4);
+  }
+
+  /* Tab icon pop when a tab becomes active (kit .tabbar) */
+  .ember-tab-pop {
+    animation: ember-tab-pop .35s var(--spring);
+  }
+  @keyframes ember-tab-pop { 50% { transform: scale(1.15); } }
+
+  /* Field shake for validation errors (kit .field.shake) */
+  .ember-shake {
+    animation: ember-shake .25s ease 2;
+  }
+  @keyframes ember-shake { 25% { translate: -0.3125rem 0; } 75% { translate: 0.3125rem 0; } }
+
+  /* Skeleton shimmer (kit .skel) */
+  .ember-skel {
+    border-radius: 0.625rem;
+    background: var(--track);
+    box-shadow: var(--track-inset);
+    position: relative;
+    overflow: hidden;
+  }
+  .ember-skel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+    translate: -100% 0;
+    animation: ember-shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes ember-shimmer { to { translate: 100% 0; } }
+
+  /* Element pop-in (kit .tag) */
+  .ember-pop-in {
+    animation: ember-tag-in .25s var(--spring);
+  }
+  @keyframes ember-tag-in { from { scale: .6; opacity: 0; } }
+
+  /* Bottom-sheet entrance with upward overshoot (kit .sheet) */
+  .animate-sheet-in {
+    animation: ember-sheet-in .5s both;
+  }
+  @keyframes ember-sheet-in {
+    0% { translate: 0 105%; animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+    60% { translate: 0 -3.5vh; animation-timing-function: cubic-bezier(.35,.6,.4,1); }
+    100% { translate: 0 0; }
+  }
 }

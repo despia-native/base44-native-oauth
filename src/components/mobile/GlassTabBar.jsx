@@ -23,13 +23,13 @@ export default function GlassTabBar() {
               type="button"
               onClick={() => { if (!active) { haptics.light?.(); navigate(path) } }}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-bold transition-all active:scale-95 ${
+              className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-bold transition-[color,transform] duration-300 [transition-timing-function:var(--spring)] active:scale-[.92] ${
                 active
                   ? 'ember-glass-hi text-primary'
                   : 'text-muted-foreground'
               }`}
             >
-              <Icon className="w-[18px] h-[18px]" strokeWidth={2.2} />
+              <Icon className={`w-[18px] h-[18px] ${active ? 'ember-tab-pop' : ''}`} strokeWidth={2.2} />
               {label}
             </button>
           )

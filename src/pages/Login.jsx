@@ -190,7 +190,7 @@ export default function Login() {
             </p>
 
             <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-              <div className="flex flex-col gap-3">
+              <div key={error || 'ok'} className={`flex flex-col gap-3 ${error ? 'ember-shake' : ''}`}>
                 {mode === 'register' && (
                   <input
                     type="text"
