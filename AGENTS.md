@@ -17,6 +17,17 @@ This codebase is a **template for a fully custom authentication system**: native
 
 Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
 
+## UI / UX — Native-First Design Rules (read before touching UI)
+
+**Hard rule:** the app must always look and feel like a native iOS/Android app,
+never a wrapped website. Before creating or editing ANY screen or component,
+**read `DESIGN_GUIDELINES.md`** — it defines the mandatory app shell (no body
+scroll, `.scroll-container`), safe-area rules, the ember material system,
+responsive `.page-wrap` caps for iPad/desktop, touch/haptic/motion standards,
+and the new-screen checklist. Only design tokens and ember materials — never
+hardcoded colors, hover-only feedback, browser dialogs, or unwrapped
+full-width layouts on tablet.
+
 ## DB Security — Deny-All RLS on EVERY Entity (read before touching data)
 
 **Hard rule:** no direct database access from the client — all entity access goes
