@@ -16,6 +16,7 @@ import SavedAccountRow from '@/components/onboarding/SavedAccountRow'
 import SavedAccountCard from '@/components/onboarding/SavedAccountCard'
 import AccountPickerDrawer from '@/components/onboarding/AccountPickerDrawer'
 import { loadSavedAccounts, removeSavedAccount } from '@/lib/savedAccounts'
+import PoweredByDespia from '@/components/PoweredByDespia'
 
 const isDespia = isNative()
 
@@ -319,6 +320,7 @@ export default function Login() {
         <p className="text-center text-[12px] text-muted-foreground/70 px-6 mt-1">
           By continuing you agree to our Terms of Service and Privacy Policy.
         </p>
+        <PoweredByDespia />
       </div>
 
       <AccountPickerDrawer

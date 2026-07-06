@@ -3,6 +3,7 @@ import { Users, LogOut, ShieldCheck, Mail, BadgeCheck, UserPlus, ChevronRight, B
 import { useAuth } from '@/lib/AuthContext'
 import ListRow from '@/components/mobile/ListRow'
 import PremiumSection from '@/components/premium/PremiumSection'
+import PoweredByDespia from '@/components/PoweredByDespia'
 
 export default function Account() {
   const { user, logout } = useAuth()
@@ -143,6 +144,7 @@ export default function Account() {
             />
           </div>
         )}
+        <PoweredByDespia className="mt-6" />
         <div className="h-32" />
       </div>
     </div>
