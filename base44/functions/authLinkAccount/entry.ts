@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       // ── Link with Google (authorization code flow) ────────────────────────
       // Exchange the single-use code server-side; identity comes from the
       // id_token, which arrives directly from Google over TLS (trusted as-is).
-      const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || 'https://despia-connect-go.base44.app';
+      const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || req.headers.get('origin') || 'https://despia-connect-go.base44.app';
       const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

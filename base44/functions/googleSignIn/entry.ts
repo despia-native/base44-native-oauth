@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
     // Exchange the code for tokens. redirect_uri must exactly match the one used
     // in googleAuthUrl and registered in Google Cloud Console.
-    const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || 'https://despia-connect-go.base44.app';
+    const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || req.headers.get('origin') || 'https://despia-connect-go.base44.app';
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

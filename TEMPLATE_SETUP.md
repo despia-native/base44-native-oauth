@@ -50,7 +50,7 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 
 > 🚨 **`RESEND_FROM` — required before production.** If you leave it unset, emails send from Resend's sandbox address `onboarding@resend.dev`, which **only delivers to your own Resend account email** — real users get nothing. Verify a domain in Resend (Domains → Add Domain) and set `RESEND_FROM` to an address on it.
 
-> ⚠️ `APP_BASE_URL` **must exactly match** the domain you register in Google Console (Step 3). If it's wrong, Google sign-in fails with `redirect_uri_mismatch`. The code falls back to a demo URL if unset — always set your own.
+> ⚠️ `APP_BASE_URL` **must exactly match** the domain you register in Google Console (Step 3), or Google sign-in fails with `redirect_uri_mismatch`. If the secret is unset, the backend auto-detects the domain from the calling app's own Origin header — so on the standard `*.base44.app` domain it works with zero setup. Set the secret explicitly if you use a custom domain with multiple origins.
 
 ---
 
