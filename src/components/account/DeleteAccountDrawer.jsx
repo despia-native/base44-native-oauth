@@ -12,15 +12,18 @@ import { haptics } from '@/lib/haptics'
 //    Vault read = Face ID / Touch ID) on native, or password as fallback.
 export default function DeleteAccountDrawer({ open, onOpenChange, account, onDeleted }) {
   const native = isNative()
-  const hasPassword = !account?.is_anonymous
+  // Password fallback only makes sense on native (as a biometric backup) —
+  // on the web, accounts may be Google/Apple-only, so type-to-confirm is the default.
+  const hasPassword = native && !account?.is_anonymous
   const [step, setStep] = useState(1)
   const [password, setPassword] = useState('')
+  const [confirmText, setConfirmText] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
   const close = (o) => {
     onOpenChange(o)
-    if (!o) { setStep(1); setPassword(''); setError(''); setBusy(false) }
+    if (!o) { setStep(1); setPassword(''); setConfirmText(''); setError(''); setBusy(false) }
   }
 
   const doDelete = async () => {
@@ -63,6 +66,14 @@ export default function DeleteAccountDrawer({ open, onOpenChange, account, onDel
     await doDelete()
   }
 
+  const handleTypeConfirm = async (e) => {
+    e.preventDefault()
+    if (confirmText.trim().toUpperCase() !== 'DELETE') return
+    setError('')
+    setBusy(true)
+    await doDelete()
+  }
+
   return (
     <Drawer open={open} onOpenChange={close}>
       <DrawerContent>
@@ -80,7 +91,7 @@ export default function DeleteAccountDrawer({ open, onOpenChange, account, onDel
               ? 'Your account and all its data will be permanently deleted. This cannot be undone.'
               : native
                 ? 'Verify it\u2019s you to permanently delete this account.'
-                : 'Enter your password to permanently delete this account.'}
+                : 'Type DELETE below to permanently delete this account.'}
           </p>
 
           {error && <p className="text-[13px] text-destructive text-center">{error}</p>}
@@ -127,9 +138,29 @@ export default function DeleteAccountDrawer({ open, onOpenChange, account, onDel
                   <button
                     type="submit"
                     disabled={busy || !password}
-                    className={`w-full h-14 rounded-full text-[16px] font-bold disabled:opacity-40 ${native ? 'ember-glass ember-press text-foreground font-semibold' : 'ember-danger'}`}
+                    className="w-full h-14 rounded-full text-[16px] font-semibold ember-glass ember-press text-foreground disabled:opacity-40"
                   >
-                    {busy && !native ? <span className="ember-spinner inline-block align-middle" /> : 'Confirm with password'}
+                    Confirm with password
+                  </button>
+                </form>
+              )}
+              {!native && (
+                <form onSubmit={handleTypeConfirm} className="flex flex-col gap-3">
+                  <input
+                    type="text"
+                    required
+                    autoComplete="off"
+                    placeholder="Type DELETE to confirm"
+                    value={confirmText}
+                    onChange={(e) => setConfirmText(e.target.value)}
+                    className="ember-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={busy || confirmText.trim().toUpperCase() !== 'DELETE'}
+                    className="w-full h-14 rounded-full ember-danger text-[16px] font-bold disabled:opacity-40"
+                  >
+                    {busy ? <span className="ember-spinner inline-block align-middle" /> : 'Permanently delete'}
                   </button>
                 </form>
               )}
