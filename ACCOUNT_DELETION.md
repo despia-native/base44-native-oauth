@@ -71,8 +71,19 @@ so the record is deleted outright.
 ## Frontend flow
 
 1. `src/components/account/DeleteAccountDrawer.jsx` — two-step confirmation:
-   warning → identity check (Face ID / Touch ID via locked Storage Vault on
-   native, password fallback, or type-DELETE on web).
+   warning → identity check with the account's **original sign-in method**
+   (reported by `authMe` as `auth_methods`):
+   - **Password** account → re-enter the password (verified via `authLogin`).
+   - **Google** account → re-authenticate with Google. The OAuth round-trip is
+     flagged via `localStorage` (`reauth_delete`, see `src/lib/reauth.js`);
+     `/auth` (`src/pages/Auth.jsx`) then calls `authReauth` — which verifies the
+     returned Google identity **matches this exact account** — and only then
+     deletes. Picking a different Google account is rejected.
+   - **Apple** account → re-authenticate with Apple. iOS/web: native popup
+     returns the `id_token` inline → `authReauth` → delete. Android: deeplink
+     round-trip through `/auth`, same as Google.
+   - **Guest** (no method) → Face ID / Touch ID via locked Storage Vault on
+     native; type-DELETE on web.
 2. `customAuth.deleteAccount()` calls `authDeleteAccount` with the session JWT.
 3. `src/pages/Account.jsx` → `handleDeleted()`:
    - removes the account from the device's saved-account switcher, and
