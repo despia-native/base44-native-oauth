@@ -17,6 +17,15 @@ This codebase is a **template for a fully custom authentication system**: native
 
 Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
 
+## DB Security — Deny-All RLS on EVERY Entity (read before touching data)
+
+**Hard rule:** no direct database access from the client — all entity access goes
+through backend functions (verify app JWT → `base44.asServiceRole`). Every entity,
+existing or new, MUST include the deny-all `rls` block. **Read `DB_SECURITY.md`**
+for the exact block, the rationale, and the new-entity checklist. Never add
+`base44.entities.*` calls in frontend code, and never create an entity schema
+without the deny-all RLS block.
+
 ## Despia Native Features — ALWAYS query the live docs
 
 This app runs inside a Despia native shell with 50+ native capabilities (push, biometrics, camera, haptics, IAP, geolocation, …). See **`DESPIA_NATIVE.md`** for the agent workflow.
