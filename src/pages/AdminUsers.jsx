@@ -97,6 +97,7 @@ export default function AdminUsers() {
       />
 
       <div className="scroll-container px-5 pb-safe-bottom" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+        <div className="page-wrap">
         <p className="px-1 pt-2 pb-3 text-[13px] text-muted-foreground">
           {accounts.length} account{accounts.length === 1 ? '' : 's'}
         </p>
@@ -148,6 +149,7 @@ export default function AdminUsers() {
               />
             ))
           )}
+        </div>
         </div>
       </div>
 

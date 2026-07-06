@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <div className="relative flex flex-col h-full bg-background">
       <div className="scroll-container px-5" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+        <div className="page-wrap">
         {/* Large title */}
         <div className="pt-4 pb-8">
           <h2 className="text-[32px] leading-tight font-bold tracking-tight text-foreground">
@@ -44,6 +45,7 @@ export default function Home() {
         </div>
         <PoweredByDespia className="mt-6" />
         <div className="h-32" />
+        </div>
       </div>
     </div>
   )

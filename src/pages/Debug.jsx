@@ -57,7 +57,7 @@ export default function Debug() {
           <ChevronLeft className="w-6 h-6" /> Back
         </button>
 
-        <div className="w-full max-w-sm mx-auto flex flex-col pt-4 pb-16">
+        <div className="w-full max-w-sm md:max-w-md mx-auto flex flex-col pt-4 pb-16">
           <h1 className="text-[26px] font-bold tracking-tight text-foreground mb-6">Push Debug</h1>
 
           <div className="rounded-3xl ember-card p-4 mb-4 flex items-center gap-3">

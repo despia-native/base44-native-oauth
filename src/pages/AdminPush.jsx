@@ -38,7 +38,7 @@ export default function AdminPush() {
           <ChevronLeft className="w-6 h-6" /> Back
         </button>
 
-        <div className="w-full max-w-sm mx-auto flex flex-col pt-4 pb-16">
+        <div className="w-full max-w-sm md:max-w-md mx-auto flex flex-col pt-4 pb-16">
           <h1 className="text-[26px] font-bold tracking-tight text-foreground mb-6">Push Notifications</h1>
 
           {/* Target picker */}

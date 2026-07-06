@@ -283,6 +283,20 @@
     display: none;
   }
 
+  /* Responsive page column — full-width on phones, comfortably capped and
+     centered on iPad / tablet / desktop so content never stretches edge to edge. */
+  .page-wrap {
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  @media (min-width: 48rem) {
+    .page-wrap { max-width: 36rem; }
+  }
+  @media (min-width: 64rem) {
+    .page-wrap { max-width: 42rem; }
+  }
+
   /* ── Ember materials ─────────────────────────────────────────────
      Two materials only: translucent convex glass for secondary things,
      high-contrast convex primary/accent — one per screen. */

@@ -23,6 +23,7 @@ export default function Account() {
   return (
     <div className="relative flex flex-col h-full bg-background">
       <div className="scroll-container px-5" style={{ paddingTop: 'calc(var(--safe-area-top, 0px) + 72px)' }}>
+        <div className="page-wrap">
         {/* Profile hero */}
         <div className="flex flex-col items-center text-center pt-6 pb-6">
           <div className="relative">
@@ -169,6 +170,7 @@ export default function Account() {
 
         <PoweredByDespia className="mt-6" />
         <div className="h-32" />
+        </div>
       </div>
 
       <DeleteAccountDrawer

@@ -145,12 +145,12 @@ export default function Login() {
   return (
     <div className="flex flex-col h-full bg-background pt-safe-top pb-safe-bottom">
       {/* Value-prop carousel fills the middle */}
-      <div className="flex-1 flex items-center min-h-0">
+      <div className="flex-1 flex items-center min-h-0 w-full max-w-lg mx-auto">
         <OnboardingCarousel slides={SLIDES} />
       </div>
 
       {/* Bottom CTA stack */}
-      <div className="w-full max-w-sm mx-auto px-5 pb-6 flex flex-col gap-3">
+      <div className="w-full max-w-sm md:max-w-md mx-auto px-5 pb-6 flex flex-col gap-3">
         {error && <p className="text-[13px] text-destructive text-center">{error}</p>}
 
         {!accountsLoaded ? (

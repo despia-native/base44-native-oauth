@@ -29,7 +29,7 @@ export default function ForgotPassword() {
       </header>
 
       <div className="scroll-container flex flex-col items-center px-5 pb-safe-bottom">
-        <div className="w-full max-w-sm flex flex-col items-center pt-10">
+        <div className="w-full max-w-sm md:max-w-md flex flex-col items-center pt-10">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
             <KeyRound className="w-7 h-7 text-primary" />
           </div>
