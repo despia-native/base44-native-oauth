@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from '@/App.jsx'
 import '@/index.css'
 import { captureIncomingToken, hasPendingToken } from '@/lib/deeplinkToken'
+import despia from 'despia-native'
+
+// Our layout is a fixed full-height frame that handles the keyboard itself —
+// disable the native WebView resize/reposition on keyboard open so the view
+// never shifts and no white gap appears below the keyboard.
+if (navigator.userAgent.toLowerCase().includes('despia')) {
+  despia('preventdefault://autoscroll?enabled=false')
+}
 
 // A native deep-link can reopen the app with the OAuth token on ANY path — and the
 // static host may collapse "/oauth/auth?token=..." down to "/" before React boots,
