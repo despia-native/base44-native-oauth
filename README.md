@@ -7,6 +7,36 @@ Instead of Base44's built-in `base44.auth`, this app owns its entire auth stack:
 **📖 Start here:**
 - [`TEMPLATE_SETUP.md`](./src/TEMPLATE_SETUP.md) — the checklist of what to change to make this app yours (3 spots: config, secrets, external accounts).
 - [`DESPIA_OAUTH.md`](./src/DESPIA_OAUTH.md) — the full mental model and how Despia, Base44, and Google fit together.
+- [`JWT_AUTH.md`](./JWT_AUTH.md) — **the authentication system.** Custom JWT sessions, the `Account` entity, password hashing, Google/Apple/device sign-in, and the guest session model. This is the single source of truth for auth.
+
+---
+
+## 🧩 Main dependency: Despia
+
+**[Despia](https://despia.com) is the primary runtime dependency of this app.** The app is built to run inside Despia's native iOS/Android WebView shell, and several core features only work there:
+
+| Feature | Despia mechanism |
+|---|---|
+| Native Google Sign-In | `oauth://` bridge → secure in-app browser → deep link back (`myapp://oauth/auth`) |
+| Session persistence across reinstalls | Despia **Storage Vault** (`src/lib/tokenVault.js`) |
+| Anonymous guest accounts | Stable device UUID from the vault (`src/lib/deviceAuth.js`) |
+| Push notifications | Despia push bridge (`src/lib/push.js`, `sendPush` function) |
+| Haptics | `despia-native` package (`src/lib/haptics.js`) |
+| Instant boot / offline / OTA updates | `@despia/local` Vite plugin — the web build is served from `http://localhost` on-device |
+| Safe areas / native chrome | `--safe-area-*` variables injected by the shell |
+
+Packages: **`despia-native`** (runtime bridge) and **`@despia/local`** (local-server build, wired in `vite.config.js`). In a plain browser the app still runs (web preview), but native-only features gracefully fall back.
+
+## 🔐 Authentication — fully custom, not Base44 login
+
+This app does **not** use Base44's built-in login, SSO, or `base44.auth` sessions. Authentication is entirely self-owned:
+
+- Users live in the **`Account` entity**; sessions are our own **HS256 JWTs** signed with `JWT_SECRET`.
+- Sign-in methods: email/password, Google (native OAuth), Apple, and automatic anonymous device accounts.
+- Backend: the `auth*`, `googleSignIn`, `appleSignIn`, and `deviceSignIn` functions. Frontend: `src/lib/customAuth.js` + `src/lib/AuthContext.jsx`.
+- Required secrets: `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY`. Any `sso_*` secrets are legacy Base44-SSO leftovers and are **not used** — they can be deleted.
+
+Full details, flows, and security practices: [`JWT_AUTH.md`](./JWT_AUTH.md).
 
 > ℹ️ **Keep the Base44 setup below intact.** This project runs *on* Base44 — the CLI, config, and hosted-backend steps are how you run, edit, and publish it. Removing them breaks the project.
 
