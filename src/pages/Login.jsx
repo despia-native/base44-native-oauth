@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/lib/AuthContext'
-import { ChevronLeft, Layers, Cloud, ShieldCheck, Mail, Apple } from 'lucide-react'
+import { ChevronLeft, Layers, Cloud, ShieldCheck, Mail } from 'lucide-react'
+import AppleIcon from '@/components/AppleIcon'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 import * as customAuth from '@/lib/customAuth'
@@ -285,7 +286,7 @@ export default function Login() {
               onClick={handleAppleSignIn}
               className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
             >
-              <Apple className="w-5 h-5 fill-current" />
+              <AppleIcon className="w-5 h-5" />
               Continue with Apple
             </button>
 

@@ -1,4 +1,5 @@
-import { Mail, Apple, User } from 'lucide-react'
+import { Mail, User } from 'lucide-react'
+import AppleIcon from '@/components/AppleIcon'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import GoogleIcon from '@/components/GoogleIcon'
 import SavedAccountRow from '@/components/onboarding/SavedAccountRow'
@@ -39,7 +40,7 @@ export default function AccountPickerDrawer({
             <GoogleIcon className="w-5 h-5" /> Google
           </button>
           <button type="button" onClick={onApple} className={option}>
-            <Apple className="w-5 h-5 fill-current" /> Apple
+            <AppleIcon className="w-5 h-5" /> Apple
           </button>
           <button type="button" onClick={onEmail} className={option}>
             <Mail className="w-5 h-5" /> Email
