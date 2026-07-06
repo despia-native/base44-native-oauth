@@ -391,12 +391,18 @@
   }
   @keyframes ember-spin { to { rotate: 360deg; } }
 
-  /* Floating chrome (header capsule + tab bar) — hi glass with heavy blur */
+  /* Floating chrome (header capsule + tab bar) — hi glass with heavy blur.
+     translateZ(0) + backface-visibility pin the chrome to its own GPU layer so
+     WKWebView / Android WebView never re-rasterize the backdrop blur while
+     pages animate underneath it (see DOM_OPTIMIZATION.md). */
   .liquid-glass {
     background: var(--glass-grad-hi);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     box-shadow: var(--convex);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   /* iOS-native bottom sheet: large continuous corners — `corner-shape: squircle`

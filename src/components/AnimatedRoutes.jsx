@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Routes, Route, Navigate, useLocation, useNavigationType } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import PageNotFound from '@/lib/PageNotFound'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import GlassHeader from '@/components/mobile/GlassHeader'
@@ -36,6 +36,8 @@ const protectedPages = pages.filter((p) => !PUBLIC_PATHS.includes(p.path))
 export default function AnimatedRoutes() {
   const location = useLocation()
   const navType = useNavigationType()
+  // Reduce Motion (often paired with Low Power Mode) → crossfade instead of slide.
+  const reduceMotion = useReducedMotion()
   // Tab pages share persistent chrome rendered OUTSIDE the route animation,
   // so the header and tab bar stay perfectly still while pages swipe under them.
   const tabPage = TAB_TITLES[location.pathname]
@@ -58,8 +60,12 @@ export default function AnimatedRoutes() {
         animate="animate"
         exit="exit"
         className="flex-1 min-h-0 flex flex-col bg-background"
-        style={{ boxShadow: '-0.75rem 0 2rem rgba(0,0,0,.18)', willChange: 'transform' }}
-        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+        // PERF: no permanent willChange — a full-page layer kept alive forever
+        // costs GPU memory in WKWebView/Android WebView and causes Low Power
+        // Mode jank; framer-motion promotes the layer only while animating.
+        // The edge shadow blur is kept small — it rasterizes with the layer.
+        style={{ boxShadow: '-0.5rem 0 1.25rem rgba(0,0,0,.16)' }}
+        transition={reduceMotion ? { duration: 0.15 } : { duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
       >
         {/* Native edge swipe-back on every page EXCEPT the menu-bar roots */}
         <SwipeBack enabled={!tabPage}>

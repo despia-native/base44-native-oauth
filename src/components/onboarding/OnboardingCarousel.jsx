@@ -1,14 +1,26 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Native-style swipeable onboarding: horizontal scroll-snap slides + page dots.
+// The swipe itself is pure CSS scroll-snap (compositor-driven, jank-free);
+// JS only tracks the active dot. scroll events fire far more often than
+// frames, so the handler is rAF-throttled and only re-renders when the
+// active index actually changes (see DOM_OPTIMIZATION.md).
 export default function OnboardingCarousel({ slides }) {
   const trackRef = useRef(null)
   const [active, setActive] = useState(0)
+  const rafRef = useRef(0)
+
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), [])
 
   const handleScroll = () => {
-    const el = trackRef.current
-    if (!el) return
-    setActive(Math.round(el.scrollLeft / el.clientWidth))
+    if (rafRef.current) return // already scheduled this frame
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0
+      const el = trackRef.current
+      if (!el) return
+      const idx = Math.round(el.scrollLeft / el.clientWidth)
+      setActive((a) => (a === idx ? a : idx)) // no-op render when unchanged
+    })
   }
 
   return (

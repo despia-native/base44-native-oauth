@@ -17,9 +17,21 @@ export default function GlassTabBar() {
 
   const activeIndex = tabs.findIndex((t) => t.path === pathname)
 
+  // Measure once per route change; on resize/rotation re-measure at most once
+  // per frame via rAF (debounces the burst of resize events WebViews emit).
   useLayoutEffect(() => {
-    const el = btnRefs.current[pathname]
-    if (el) setThumb({ x: el.offsetLeft, w: el.offsetWidth })
+    const measure = () => {
+      const el = btnRefs.current[pathname]
+      if (el) setThumb({ x: el.offsetLeft, w: el.offsetWidth })
+    }
+    measure()
+    let raf = 0
+    const onResize = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(measure)
+    }
+    window.addEventListener('resize', onResize)
+    return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf) }
   }, [pathname])
 
   return (

@@ -28,6 +28,15 @@ and the new-screen checklist. Only design tokens and ember materials — never
 hardcoded colors, hover-only feedback, browser dialogs, or unwrapped
 full-width layouts on tablet.
 
+## Animation & WebView Performance (read before adding any animation)
+
+**Read `DOM_OPTIMIZATION.md`** before writing any animated or gesture-driven
+code. Summary: prefer pure CSS (transform/opacity only); JS-driven motion must
+be rAF-batched with `translate3d` and scoped `will-change`; never animate
+box-shadow/backdrop-filter/height; high-frequency events (`scroll`,
+`touchmove`, `resize`) never write DOM or setState unthrottled. These rules
+keep animations smooth in WKWebView / Android WebView and iOS Low Power Mode.
+
 ## DB Security — Deny-All RLS on EVERY Entity (read before touching data)
 
 **Hard rule:** no direct database access from the client — all entity access goes
