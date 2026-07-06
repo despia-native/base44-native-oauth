@@ -10,31 +10,32 @@
   <p><a id="continue" style="display:none;color:#ff5c1f;font-size:16px;font-weight:600;text-decoration:none">Continue to app</a></p>
   <script>
     // Google OAuth callback — authorization code flow.
-    // The one-time code arrives as a QUERY param (?code=...&state=<scheme>).
-    // We forward the code into the app; the backend exchanges it for tokens using
-    // the client secret, so no access token ever appears in any URL.
+    // The single-use code arrives as ?code=...&state=<deeplink scheme>.
     var q = new URLSearchParams(location.search);
-    var code = q.get('code');
-    var error = q.get('error');
-    var scheme = q.get('state'); // the app's deep-link scheme travels via state
+    var code = q.get('code') || '';
+    var error = q.get('error') || '';
+    var scheme = q.get('state') || '';
 
-    var params = new URLSearchParams();
-    if (code) params.set('code', code);
-    if (error) params.set('error', error);
-    var query = params.toString();
+    // IMPORTANT: keep the code RAW in the forwarded query. Google codes only
+    // contain URL-safe chars (alphanumerics, '/', '-', '_') and '/' is legal in
+    // a query value. Percent-encoding it here breaks native handoff: some
+    // native layers re-encode '%' sequences ("4%2F0A…" → "4%252F0A…"), so the
+    // app sends a double-encoded code and Google rejects it as malformed.
+    var query = code ? 'code=' + code : 'error=' + encodeURIComponent(error);
 
     if (scheme && /^[a-z][a-z0-9+.-]*$/i.test(scheme)) {
-      // Native: bounce back into the app via its deep link (Despia path: oauth/auth).
+      // Native: hand the code back to the app via its deep link (Despia path
+      // oauth/auth). NO same-origin fallback here — this page runs inside the
+      // OAuth in-app browser, and loading /auth in it would exchange (burn)
+      // the single-use code before the real app gets to use it.
       var deeplink = scheme + '://oauth/auth?' + query;
       location.href = deeplink;
-      // Some browsers require a user gesture for custom schemes — show a button too.
+      // Custom schemes can require a user gesture — offer a tappable fallback.
       var btn = document.getElementById('continue');
       btn.href = deeplink;
       btn.style.display = 'inline-block';
-      // Web fallback: in a normal browser tab the custom scheme is a no-op,
-      // so after a moment continue to the in-app /auth page on this origin.
-      setTimeout(function () { location.replace('/auth?' + query); }, 1500);
     } else {
+      // Web (no scheme in state): same origin — continue to the in-app /auth page.
       location.replace('/auth?' + query);
     }
   </script>

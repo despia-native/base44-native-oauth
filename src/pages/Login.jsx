@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/lib/AuthContext'
 import { ChevronLeft, Layers, Cloud, ShieldCheck, Mail, Apple } from 'lucide-react'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
@@ -11,6 +12,7 @@ import { appConfig } from '@/config/app-config'
 import GoogleIcon from '@/components/GoogleIcon'
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel'
 import SavedAccountRow from '@/components/onboarding/SavedAccountRow'
+import AccountPickerDrawer from '@/components/onboarding/AccountPickerDrawer'
 import { loadSavedAccounts, removeSavedAccount } from '@/lib/savedAccounts'
 
 const isDespia = isNative()
@@ -34,6 +36,9 @@ const SLIDES = [
 ]
 
 export default function Login() {
+  const navigate = useNavigate()
+  const { checkUserAuth } = useAuth()
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [view, setView] = useState('onboarding') // 'onboarding' | 'email'
   const [mode, setMode] = useState('login') // 'login' | 'register'
   const [email, setEmail] = useState('')
@@ -46,12 +51,18 @@ export default function Login() {
   // an explicit sign-out (iOS behavior: show the account picker instead).
   const [autoSignIn, setAutoSignIn] = useState(isDespia && !customAuth.wasSignedOut())
 
+  // SPA entry into the app — refresh auth state, then soft-navigate (no reload).
+  const enterApp = async () => {
+    await checkUserAuth()
+    navigate('/', { replace: true })
+  }
+
   useEffect(() => {
     loadSavedAccounts().then(setSavedAccounts)
     if (!isDespia || customAuth.wasSignedOut()) return
     let cancelled = false
     signInWithDevice()
-      .then(() => { if (!cancelled) window.location.href = '/' })
+      .then(() => { if (!cancelled) enterApp() })
       .catch(() => { if (!cancelled) setAutoSignIn(false) }) // fall back to onboarding
     return () => { cancelled = true }
   }, [])
@@ -63,7 +74,7 @@ export default function Login() {
     customAuth.setToken(acct.token)
     const account = await customAuth.fetchMe()
     if (account) {
-      window.location.href = '/'
+      await enterApp()
       return
     }
     // Token expired or the account no longer exists — drop it from the device.
@@ -83,7 +94,7 @@ export default function Login() {
     setAutoSignIn(true)
     try {
       await signInWithDevice({ biometric: true })
-      window.location.href = '/'
+      await enterApp()
     } catch (err) {
       setAutoSignIn(false)
       setError(err?.response?.data?.error || err?.message || 'Face ID sign-in failed')
@@ -93,7 +104,8 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setError('')
     // Both web and native get a Google access token, then exchange it for our own JWT on /auth.
-    const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: appConfig.deeplinkScheme })
+    // Only native needs the deep-link hop — on the web the callback stays on this origin.
+    const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: isDespia ? appConfig.deeplinkScheme : '' })
     const { url } = res.data
     if (isDespia) {
       despia(`oauth://?url=${encodeURIComponent(url)}`)
@@ -108,7 +120,7 @@ export default function Login() {
       const result = await signInWithApple()
       if (!result) return // Android: sign-in continues via the deeplink → /auth flow
       await customAuth.loginWithAppleToken(result.idToken, result.fullName)
-      window.location.href = '/'
+      await enterApp()
     } catch (err) {
       if (err?.error === 'popup_closed_by_user') return
       setError(err?.response?.data?.error || err?.message || 'Apple sign-in failed')
@@ -127,7 +139,7 @@ export default function Login() {
         await customAuth.login({ email, password })
       }
       haptics.success()
-      window.location.href = '/'
+      await enterApp()
     } catch (err) {
       const msg = err?.response?.data?.error || err?.message || 'Something went wrong'
       haptics.error()
@@ -239,60 +251,81 @@ export default function Login() {
       <div className="w-full max-w-sm mx-auto px-5 pb-6 flex flex-col gap-3">
         {error && <p className="text-[13px] text-destructive text-center">{error}</p>}
 
-        {savedAccounts.length > 0 && (
-          <div className="rounded-3xl ember-card overflow-hidden mb-1">
-            {savedAccounts.map((a, i) => (
-              <SavedAccountRow
-                key={a.id}
-                account={a}
-                first={i === 0}
-                onSelect={() => handleSavedAccount(a)}
-                onRemove={() => handleRemoveSaved(a.id)}
-              />
-            ))}
-          </div>
-        )}
+        {savedAccounts.length > 0 ? (
+          <>
+            {/* Device already has account(s) — iOS pattern: continue with the
+                most recent one, or open the switcher drawer. */}
+            <button
+              type="button"
+              onClick={() => handleSavedAccount(savedAccounts[0])}
+              className="w-full h-14 rounded-full ember-primary active:scale-95 transition-transform text-[16px] font-bold px-6 truncate"
+            >
+              Continue as {savedAccounts[0].is_anonymous ? 'Guest' : (savedAccounts[0].full_name || savedAccounts[0].email)}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              className="w-full h-14 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
+            >
+              Use another account
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={handleGoogleSignIn}
+              className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-primary active:scale-95 transition-transform text-[16px] font-bold"
+            >
+              <GoogleIcon className="w-5 h-5" />
+              Continue with Google
+            </button>
 
-        <button
-          onClick={handleGoogleSignIn}
-          className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-primary active:scale-95 transition-transform text-[16px] font-bold"
-        >
-          <GoogleIcon className="w-5 h-5" />
-          Continue with Google
-        </button>
+            <button
+              type="button"
+              onClick={handleAppleSignIn}
+              className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
+            >
+              <Apple className="w-5 h-5 fill-current" />
+              Continue with Apple
+            </button>
 
-        <button
-          type="button"
-          onClick={handleAppleSignIn}
-          className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
-        >
-          <Apple className="w-5 h-5 fill-current" />
-          Continue with Apple
-        </button>
+            <button
+              type="button"
+              onClick={() => { setView('email'); setError('') }}
+              className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
+            >
+              <Mail className="w-5 h-5" />
+              Continue with Email
+            </button>
 
-        <button
-          type="button"
-          onClick={() => { setView('email'); setError('') }}
-          className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
-        >
-          <Mail className="w-5 h-5" />
-          Continue with Email
-        </button>
-
-        {isDespia && (
-          <button
-            type="button"
-            onClick={handleFaceIdSignIn}
-            className="w-full h-12 text-[15px] font-medium text-muted-foreground active:opacity-60"
-          >
-            Continue as guest
-          </button>
+            {isDespia && (
+              <button
+                type="button"
+                onClick={handleFaceIdSignIn}
+                className="w-full h-12 text-[15px] font-medium text-muted-foreground active:opacity-60"
+              >
+                Continue as guest
+              </button>
+            )}
+          </>
         )}
 
         <p className="text-center text-[12px] text-muted-foreground/70 px-6 mt-1">
           By continuing you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>
+
+      <AccountPickerDrawer
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        savedAccounts={savedAccounts}
+        onSelectSaved={(a) => { setPickerOpen(false); handleSavedAccount(a) }}
+        onRemoveSaved={handleRemoveSaved}
+        onGoogle={() => { setPickerOpen(false); handleGoogleSignIn() }}
+        onApple={() => { setPickerOpen(false); handleAppleSignIn() }}
+        onEmail={() => { setPickerOpen(false); setView('email'); setError('') }}
+        onGuest={isDespia ? () => { setPickerOpen(false); handleFaceIdSignIn() } : undefined}
+      />
     </div>
   )
 }

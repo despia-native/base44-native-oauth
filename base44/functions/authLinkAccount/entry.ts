@@ -54,8 +54,13 @@ Deno.serve(async (req) => {
       return new Response(null, { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, content-type' } });
     }
 
-    const { token, email, password, full_name, google_code } = await req.json();
+    let { token, email, password, full_name, google_code } = await req.json();
     if (!token) return Response.json({ error: 'Not signed in' }, { status: 401 });
+    // Defense: native layers sometimes re-encode the deep link, so the code can
+    // arrive percent-encoded (4%2F0A…). Real Google codes never contain '%'.
+    if (google_code && google_code.includes('%')) {
+      try { google_code = decodeURIComponent(google_code); } catch { /* keep as-is */ }
+    }
 
     const secret = Deno.env.get('JWT_SECRET');
     const payload = await verifyJwt(token, secret);

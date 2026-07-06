@@ -32,8 +32,13 @@ Deno.serve(async (req) => {
       return new Response(null, { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, content-type' } });
     }
 
-    const { google_code } = await req.json();
+    let { google_code } = await req.json();
     if (!google_code) return Response.json({ error: 'google_code is required' }, { status: 400 });
+    // Defense: native layers sometimes re-encode the deep link, so the code can
+    // arrive percent-encoded (4%2F0A…). Real Google codes never contain '%'.
+    if (google_code.includes('%')) {
+      try { google_code = decodeURIComponent(google_code); } catch { /* keep as-is */ }
+    }
 
     // Exchange the code for tokens. redirect_uri must exactly match the one used
     // in googleAuthUrl and registered in Google Cloud Console.

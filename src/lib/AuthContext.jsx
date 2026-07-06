@@ -44,11 +44,12 @@ export const AuthProvider = ({ children }) => {
     },
   });
 
-  const logout = (shouldRedirect = true) => {
+  // SPA logout — no hard redirect: clearing the auth state makes ProtectedRoute
+  // render <Navigate to="/login" /> on its own, without reloading the page.
+  const logout = () => {
     customAuth.logout();
     setUser(null);
     setIsAuthenticated(false);
-    if (shouldRedirect) window.location.href = '/login';
   };
 
   return (

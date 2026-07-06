@@ -97,7 +97,7 @@ export default function Auth() {
       {ready && (
         <button
           type="button"
-          onClick={() => { window.location.href = '/' }}
+          onClick={() => navigate('/', { replace: true })}
           className="w-full max-w-sm h-14 rounded-full ember-primary text-[16px] font-bold active:scale-95 transition-transform"
         >
           Continue to App
