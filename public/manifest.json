@@ -1,0 +1,16 @@
+{
+  "name": "My App",
+  "short_name": "My App",
+  "description": "Your account, your data, your settings — synced securely across all your devices.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f0eb",
+  "theme_color": "#f2f0eb",
+  "icons": [
+    {
+      "src": "https://base44.com/logo_v2.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
