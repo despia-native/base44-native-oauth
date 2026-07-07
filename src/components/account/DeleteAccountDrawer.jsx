@@ -19,7 +19,9 @@ export default function DeleteAccountDrawer({ open, onOpenChange, account, onDel
 
   const close = (o) => {
     onOpenChange(o)
-    if (!o) { setStep(1); setError(''); setBusy(false) }
+    // Reset AFTER the exit animation — swapping content mid-close changes the
+    // sheet's height while it slides out and makes the animation cut off.
+    if (!o) setTimeout(() => { setStep(1); setError(''); setBusy(false) }, 500)
   }
 
   const doDelete = async () => {
