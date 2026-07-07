@@ -2,7 +2,7 @@
 
 A production-grade **mobile app starter template** and **boilerplate** for shipping **real native iOS and Android apps** — built with **React, Vite, and Tailwind CSS** on the [Base44](https://base44.com) **no-code / low-code backend** (serverless functions, database, auth, email) and packaged as a native app with [Despia](https://despia.com) (a **web-to-app / WebView-to-native converter** with OTA updates and a native bridge).
 
-This is not just an authentication template — it's a complete, **App Store and Google Play Store compliant** foundation for launching a **hybrid mobile app** fast: a native-feel **iOS-style UI kit**, **custom JWT authentication** with Google Sign-In, Sign in with Apple and **guest login**, in-app **account deletion**, **push notifications**, **in-app purchases / premium subscriptions (RevenueCat)**, an **admin dashboard**, and hardened **database security (row-level security)**.
+A complete, **App Store and Google Play Store compliant** foundation for launching a **hybrid mobile app** fast: a native-feel **iOS-style UI kit**, **custom JWT authentication** with Google Sign-In, Sign in with Apple and **guest login**, in-app **account deletion**, **push notifications**, **in-app purchases / premium subscriptions (RevenueCat)**, an **admin dashboard**, and hardened **database security (row-level security)**.
 
 Perfect for indie hackers, startups, and agencies building an **MVP mobile app**, converting a **web app to a native app**, publishing a **React app to the App Store**, or launching a **SaaS mobile client** without writing Swift or Kotlin.
 
@@ -38,13 +38,13 @@ Everything Apple and Google review teams commonly reject hybrid apps for is alre
 - Native **bottom sheets / drawers** (vaul) with spring easing, animated height, and iOS grabber.
 - **Haptic feedback**, tap-scale press states, reduced-motion support — **smooth 60fps animations** tuned for WKWebView and Android WebView.
 
-### Authentication — fully custom, not Base44 login
-A complete **mobile authentication system**: **social login (Google OAuth + Sign in with Apple)**, **email/password login**, **passwordless guest mode**, and **secure JWT session management**. This app does **not** use Base44's built-in login or `base44.auth` sessions. Auth is entirely self-owned:
+### Custom JWT authentication
+A complete, self-owned **mobile authentication system**: **social login (Google OAuth + Sign in with Apple)**, **email/password login**, **passwordless guest mode**, and **secure JWT session management** (independent of Base44's built-in login):
 - Users live in the **`Account` entity**; sessions are app-signed **HS256 JWTs** (`JWT_SECRET`).
 - Sign-in methods: **email/password, Google (native OAuth via Despia's `oauth://` bridge), Apple, and automatic anonymous device accounts** (guest mode).
 - Guest → real account upgrading, multi-account switcher, saved accounts, password reset via email (Resend), account linking.
 - Backend: `auth*`, `googleSignIn`, `appleSignIn`, `deviceSignIn` functions. Frontend: `src/lib/customAuth.js` + `src/lib/AuthContext.jsx`.
-- Required secrets: `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY`. (Any `sso_*` secrets are legacy leftovers and unused.)
+- Required secrets: `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY`.
 
 Full flows and security practices: [`JWT_AUTH.md`](./JWT_AUTH.md).
 
