@@ -34,7 +34,12 @@ Deno.serve(async (req) => {
     const { token, action, target_id, updates } = body;
     if (!token) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    // Security: never verify against a missing/weak secret — encode(undefined) would
+    // silently become the well-known key "undefined", allowing forged admin tokens.
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 16) {
+      return Response.json({ error: 'Server misconfigured: JWT_SECRET is not set' }, { status: 500 });
+    }
     const payload = await verifyJwt(token, secret);
     if (!payload?.sub) return Response.json({ error: 'Invalid session' }, { status: 401 });
 

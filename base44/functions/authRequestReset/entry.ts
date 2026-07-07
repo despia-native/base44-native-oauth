@@ -50,7 +50,9 @@ Deno.serve(async (req) => {
 
       // Send via Resend so we can reach any email (not just registered Base44 users).
       const resendKey = Deno.env.get('RESEND_API_KEY');
-      const html = `<p>Hi ${account.full_name || ''},</p>
+      // Escape the user-controlled name so a malicious full_name can't inject HTML into the email.
+      const safeName = String(account.full_name || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const html = `<p>Hi ${safeName},</p>
 <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
 <p><a href="${link}" style="display:inline-block;padding:10px 18px;background:#111;color:#fff;border-radius:8px;text-decoration:none">Reset password</a></p>
 <p>Or paste this link into your browser:<br>${link}</p>
