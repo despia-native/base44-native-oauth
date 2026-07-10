@@ -62,8 +62,11 @@ so the record is deleted outright.
   the recommended pattern for apps with anonymous/device accounts.
 - **Google Play data-deletion policy**: same reasoning — all user-provided and
   identity data is erased.
-- **GDPR / "right to erasure"**: a random device UUID with no linkage to a
-  person is not personal data once every identifying field is wiped.
+- **GDPR / "right to erasure"**: the flow is designed to avoid retaining
+  directly identifying personal data — what survives is pseudonymous device
+  state (a random device UUID) used solely to preserve purchases. Note that
+  persistent device identifiers can still be legally sensitive depending on
+  jurisdiction and context; review with your own counsel before launch.
 - **Not "deactivation"**: the account cannot be recovered — the email, password
   and social identities are gone. Signing in again with the same email creates
   a brand-new account.

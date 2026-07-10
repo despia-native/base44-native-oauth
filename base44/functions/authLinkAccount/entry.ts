@@ -63,6 +63,9 @@ Deno.serve(async (req) => {
     }
 
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
     const payload = await verifyJwt(token, secret);
     if (!payload) return Response.json({ error: 'Invalid or expired session' }, { status: 401 });
 
@@ -101,6 +104,17 @@ Deno.serve(async (req) => {
       if (!tokenInfo.email) return Response.json({ error: 'Google account has no email' }, { status: 401 });
       if (tokenInfo.aud !== Deno.env.get('GOOGLE_CLIENT_ID')) {
         return Response.json({ error: 'Token not issued for this app' }, { status: 401 });
+      }
+      if (tokenInfo.iss !== 'https://accounts.google.com' && tokenInfo.iss !== 'accounts.google.com') {
+        return Response.json({ error: 'Wrong token issuer' }, { status: 401 });
+      }
+      if (tokenInfo.exp && tokenInfo.exp < Math.floor(Date.now() / 1000)) {
+        return Response.json({ error: 'Google token expired' }, { status: 401 });
+      }
+      // Linking/merging by email requires a Google-verified email — otherwise an
+      // unverified address could be used to merge into someone else's account.
+      if (tokenInfo.email_verified === false || tokenInfo.email_verified === 'false') {
+        return Response.json({ error: 'Google email is not verified' }, { status: 401 });
       }
 
       const cleanEmail = tokenInfo.email.toLowerCase().trim();

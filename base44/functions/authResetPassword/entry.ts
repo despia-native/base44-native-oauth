@@ -43,6 +43,9 @@ Deno.serve(async (req) => {
     if (new_password.length < 8) return Response.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
 
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
     const payload = await verifyJwt(reset_token, secret);
     if (!payload || payload.purpose !== 'password_reset') {
       return Response.json({ error: 'This reset link is invalid or has expired' }, { status: 401 });

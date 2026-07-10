@@ -1,8 +1,8 @@
-# Base44 Mobile App Starter Project (Store Compliant)
+# Base44 Mobile App Starter Project (Store-Review-Ready)
 
 A production-grade **mobile app starter template** and **boilerplate** for shipping **real native iOS and Android apps** — built with **React, Vite, and Tailwind CSS** on the [Base44](https://base44.com) **no-code / low-code backend** (serverless functions, database, auth, email) and packaged as a native app with [Despia](https://despia.com) (a **web-to-app / WebView-to-native converter** with OTA updates and a native bridge).
 
-A complete, **App Store and Google Play Store compliant** foundation for launching a **hybrid mobile app** fast: a native-feel **iOS-style UI kit**, **custom JWT authentication** with Google Sign-In, Sign in with Apple and **guest login**, in-app **account deletion**, **push notifications**, **in-app purchases / premium subscriptions (RevenueCat)**, an **admin dashboard**, and hardened **database security (row-level security)**.
+A complete, **store-review-ready foundation** — it handles the common hybrid-app rejection points for the App Store and Google Play — for launching a **hybrid mobile app** fast: a native-feel **iOS-style UI kit**, **custom JWT authentication** with Google Sign-In, Sign in with Apple and **guest login**, in-app **account deletion**, **push notifications**, **in-app purchases / premium subscriptions (RevenueCat)**, an **admin dashboard**, and hardened **database security (row-level security)**.
 
 Perfect for indie hackers, startups, and agencies building an **MVP mobile app**, converting a **web app to a native app**, publishing a **React app to the App Store**, or launching a **SaaS mobile client** without writing Swift or Kotlin.
 
@@ -14,9 +14,9 @@ Perfect for indie hackers, startups, and agencies building an **MVP mobile app**
 
 ---
 
-## ✅ Store Compliance Built In
+## ✅ Store-Review-Ready Foundation
 
-Everything Apple and Google review teams commonly reject hybrid apps for is already handled:
+Everything Apple and Google review teams commonly reject hybrid apps for is already handled (a strong foundation — not a guarantee of approval):
 
 | Requirement | How this starter satisfies it |
 |---|---|
@@ -28,6 +28,8 @@ Everything Apple and Google review teams commonly reject hybrid apps for is alre
 | **Accessibility** | WCAG 2.1 AA with VoiceOver/TalkBack support throughout — `src/ACCESSIBILITY.md` |
 | **In-app purchases** | RevenueCat integration for premium subscriptions (`src/lib/revenuecat.js`, `src/lib/PremiumContext.jsx`) |
 | **Privacy / data security** | Deny-all RLS on every entity; all data access via authenticated backend functions — `DB_SECURITY.md` |
+
+> ⚠️ **Recommended before public launch: add rate limiting.** The auth endpoints (login, register, password reset) ship without app-level per-IP / per-email throttling. Add throttling (e.g. an attempt counter per email + per IP with a cooldown) before exposing sign-up to the public — see the known tradeoffs in `DESPIA_OAUTH.md`.
 
 ## 📱 What's Included
 

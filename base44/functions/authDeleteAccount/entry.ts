@@ -52,6 +52,9 @@ Deno.serve(async (req) => {
     if (!token) return Response.json({ error: 'No token provided' }, { status: 401 });
 
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
     const payload = await verifyJwt(token, secret);
     if (!payload) return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
 

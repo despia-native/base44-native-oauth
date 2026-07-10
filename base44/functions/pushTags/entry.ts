@@ -47,7 +47,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing tags' }, { status: 400 });
     }
 
-    const payload = await verifyJwt(token, Deno.env.get('JWT_SECRET'));
+    const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
+    const payload = await verifyJwt(token, secret);
     if (!payload?.sub) return Response.json({ error: 'Invalid session' }, { status: 401 });
 
     const base44 = createClientFromRequest(req);

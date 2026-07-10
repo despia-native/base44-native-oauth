@@ -64,6 +64,9 @@ Deno.serve(async (req) => {
     if (!token) return Response.json({ error: 'No token provided' }, { status: 401 });
 
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
     const session = await verifyJwt(token, secret);
     if (!session) return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
 
@@ -94,6 +97,12 @@ Deno.serve(async (req) => {
       const info = decodeJwtPayload(tokenData.id_token);
       if (info.aud !== Deno.env.get('GOOGLE_CLIENT_ID')) {
         return Response.json({ error: 'Token not issued for this app' }, { status: 401 });
+      }
+      if (info.iss !== 'https://accounts.google.com' && info.iss !== 'accounts.google.com') {
+        return Response.json({ error: 'Wrong token issuer' }, { status: 401 });
+      }
+      if (info.exp && info.exp < Math.floor(Date.now() / 1000)) {
+        return Response.json({ error: 'Google token expired' }, { status: 401 });
       }
       const subMatch = account.google_id && info.sub === account.google_id;
       const emailMatch = info.email && info.email.toLowerCase().trim() === account.email;

@@ -59,6 +59,9 @@ Deno.serve(async (req) => {
     });
 
     const secret = Deno.env.get('JWT_SECRET');
+    if (!secret || secret.length < 32) {
+      return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+    }
     const token = await signJwt({ sub: account.id, email: account.email, role: account.role }, secret);
 
     return Response.json({

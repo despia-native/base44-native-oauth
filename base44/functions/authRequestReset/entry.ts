@@ -35,6 +35,9 @@ Deno.serve(async (req) => {
     // but always return the same generic response.
     if (account && account.password_hash) {
       const secret = Deno.env.get('JWT_SECRET');
+      if (!secret || secret.length < 32) {
+        return Response.json({ error: 'Server auth is not configured' }, { status: 500 });
+      }
       // scope the token to password reset + bind to current hash so used/old links stop working after reset
       const resetToken = await signJwt(
         { sub: account.id, email: account.email, purpose: 'password_reset', ph: account.password_hash.slice(0, 16) },
