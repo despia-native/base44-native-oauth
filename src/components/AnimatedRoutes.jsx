@@ -102,9 +102,11 @@ export default function AnimatedRoutes() {
         style={{ boxShadow: '-0.5rem 0 1.25rem rgba(0,0,0,.16)' }}
         transition={transition}
       >
-        {/* Native edge swipe-back on every page EXCEPT the menu-bar roots */}
+        {/* Swipe-back GESTURE is disabled — back navigation happens only via
+            clicks/buttons, and the router plays the slide animation itself.
+            The live gesture caused page flashes, so only the animated effect remains. */}
         <ScrollMemory />
-        <SwipeBack enabled={!tabPage}>
+        <SwipeBack enabled={false}>
           <Routes location={location}>
             {publicPages.map(({ path, Component }) => (
               <Route key={path} path={path} element={<Component />} />
