@@ -140,7 +140,7 @@ export default function LinkAccount() {
 
           <button
             onClick={handleGoogleLink}
-            className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
+            className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground mb-3"
           >
             <GoogleIcon className="w-5 h-5" />
             Link with Google
