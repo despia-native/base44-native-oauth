@@ -49,7 +49,8 @@ Files involved:
 ### Step 2.2 — Services ID (the "client id" used by this app)
 
 1. **Identifiers → + → Services IDs → Continue.**
-2. Description: your app name. Identifier: e.g. `com.yourcompany.yourapp.webauth`.
+2. Description: your app name. Identifier: e.g. `com.yourcompany.yourapp.webauth`
+   (this project uses `com.despia.myapp.appleauth`).
    👉 **This exact string is your `APPLE_SERVICES_ID`.**
 3. Register it, then open it and check **Sign In with Apple** → **Configure**:
    - **Primary App ID:** the App ID from Step 2.1.
@@ -86,18 +87,26 @@ calls such as token revocation. Skip it for now.
 
 ---
 
-## 4. Frontend config
+## 4. Frontend config — the client-side ID swap (⚠️ most common mistake)
 
-Edit `src/config/app-config.js` and make sure `appleServicesId` matches the
-secret **exactly**:
+**Backend secrets NEVER reach the frontend.** Setting the `APPLE_SERVICES_ID`
+secret in the dashboard configures only the backend functions — the Apple JS
+SDK popup runs in the browser and cannot read secrets. The Services ID must
+therefore ALSO be set as a plain constant in `src/config/app-config.js`:
 
 ```js
-appleServicesId: 'com.yourcompany.yourapp.webauth',
+appleServicesId: 'com.despia.myapp.appleauth',  // ← this project's Services ID
 ```
 
-This is the `clientId` the Apple JS SDK uses on iOS/web. If it doesn't match
-the backend's `APPLE_SERVICES_ID`, token verification fails with
-"Token not issued for this app".
+This is safe: a Services ID is a **public client id** (like a Google OAuth
+client id), not a secret — it's visible in the popup URL anyway.
+
+The same value must live in TWO places, kept identical:
+
+| Where | Used by | If wrong |
+|---|---|---|
+| `src/config/app-config.js` → `appleServicesId` | Apple JS SDK popup (iOS/web) | `invalid_client` in the Apple popup |
+| `APPLE_SERVICES_ID` secret (dashboard) | `appleSignIn` / `appleAuthUrl` / `authLinkAccount` / `authReauth` token verification | "Token not issued for this app" (401) AFTER a successful popup |
 
 The Apple JS SDK is already loaded in `index.html`:
 
@@ -170,8 +179,8 @@ The Android flow uses the same deeplink path with a re-auth flag.
 
 | Symptom | Cause / fix |
 |---|---|
-| `invalid_client` in the Apple popup | `appleServicesId` in `app-config.js` doesn't exist / isn't a **Services ID** (App IDs don't work), or Sign In with Apple isn't configured on it |
-| `invalid_request: Invalid web redirect url` | The current origin (or `native-callback.html`) isn't registered as a Return URL in Step 2.2 — register the **exact** URL including `https://` |
+| `invalid_client` in the Apple popup | `appleServicesId` in `app-config.js` is still the template placeholder (setting the SECRET is not enough — see §4), doesn't exist, isn't a **Services ID** (App IDs don't work), or Sign In with Apple isn't configured on it |
+| `invalid_request: Invalid web redirect url` | The current origin (or `native-callback.html`) isn't registered as a Return URL in Step 2.2 — register the **exact** URL including `https://` and the trailing `/` for the root. Note: the Base44 **editor preview** runs on a different origin and will always fail — test on the published URL |
 | "Token not issued for this app" (401 from backend) | `APPLE_SERVICES_ID` secret ≠ the `clientId` the frontend used — make them identical |
 | "Apple sign-in is unavailable" | Apple JS SDK script missing/blocked in `index.html` |
 | Android: stuck on "Signing you in…" | Deeplink scheme mismatch — `appConfig.deeplinkScheme` must match the scheme configured in Despia |
