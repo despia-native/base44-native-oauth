@@ -46,11 +46,13 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 | `JWT_SECRET` | Long random string that signs your sessions | Generate one (32+ random chars). **Keep it stable** — changing it logs everyone out |
 | `RESEND_API_KEY` | For password-reset emails | [resend.com](https://resend.com) → API Keys |
 | `RESEND_FROM` | The "from" address for reset emails, e.g. `noreply@yourdomain.com` | An address on a domain you **verified in Resend** |
-| `APP_BASE_URL` | Your app's public Base44 URL, e.g. `https://YOUR-APP.base44.app` | Your Base44 app URL (no trailing slash) |
+| `APP_BASE_URL` | Your app's public URL — your **custom domain** if you have one, e.g. `https://yourdomain.com`, else `https://YOUR-APP.base44.app` | Your app URL (no trailing slash) |
 
 > 🚨 **`RESEND_FROM` — required before production.** If you leave it unset, emails send from Resend's sandbox address `onboarding@resend.dev`, which **only delivers to your own Resend account email** — real users get nothing. Verify a domain in Resend (Domains → Add Domain) and set `RESEND_FROM` to an address on it.
 
 > ⚠️ `APP_BASE_URL` **must exactly match** the domain you register in Google Console (Step 3), or Google sign-in fails with `redirect_uri_mismatch`. If the secret is unset, the backend auto-detects the domain from the calling app's own Origin header — so on the standard `*.base44.app` domain it works with zero setup. Set the secret explicitly if you use a custom domain with multiple origins.
+
+> 🍎 `APP_BASE_URL` also builds the **Apple Sign In (Android) return URL**: `${APP_BASE_URL}/functions/appleCallback`. Backend functions are served on the app's own domain at `/functions/<name>`, so this works on a custom domain too — register that exact URL (and its domain) in the Apple Developer Console. Full details in [`APPLE_SIGN_IN.md`](./APPLE_SIGN_IN.md).
 
 ---
 
@@ -64,6 +66,13 @@ Set each of these. They are **secrets**, not code — so they never live in the 
    ```
    This must match your `APP_BASE_URL` + `/native-callback.html`.
 3. Copy the Client ID / Secret into the secrets above.
+
+### Apple Developer Console (if using Sign in with Apple)
+- **Services ID → Sign In with Apple → Configure → Return URLs** → add **exactly**:
+  ```
+  https://YOUR-DOMAIN/,https://YOUR-DOMAIN/functions/appleCallback
+  ```
+  where `YOUR-DOMAIN` is the host of `APP_BASE_URL` (also add it under **Domains and Subdomains**). See [`APPLE_SIGN_IN.md`](./APPLE_SIGN_IN.md) for the full setup.
 
 ### Despia project settings
 - **Scheme:** the same value as `appConfig.deeplinkScheme` (e.g. `myapp`)
@@ -81,6 +90,7 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 - [ ] `RESEND_FROM` secret set to an address on your **verified** Resend domain (not the sandbox)
 - [ ] `APP_BASE_URL` secret set to your app URL (no trailing slash)
 - [ ] Google Console redirect URI = `APP_BASE_URL` + `/native-callback.html`
+- [ ] Apple Console return URL = `APP_BASE_URL` + `/functions/appleCallback` (if using Apple sign-in)
 - [ ] Despia scheme + `oauth/auth` path registered
 
 When all boxes are checked, follow the **Guided Walkthrough** in [`DESPIA_OAUTH.md`](./DESPIA_OAUTH.md#guided-walkthrough-with-checkpoints) to verify each layer.

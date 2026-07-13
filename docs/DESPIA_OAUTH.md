@@ -292,7 +292,7 @@ Dashboard → **Settings** → **Environment Variables**:
 | `GOOGLE_CLIENT_SECRET` | `GOCSPX-xxxx` |
 | `JWT_SECRET` | a long random string — signs your session tokens |
 | `RESEND_API_KEY` | for password-reset emails |
-| `APP_BASE_URL` | your app's public Base44 URL, e.g. `https://YOUR-APP.base44.app` (no trailing slash) — must match the Google redirect URI domain |
+| `APP_BASE_URL` | your app's public URL — your **custom domain** if you have one, else `https://YOUR-APP.base44.app` (no trailing slash). Must match the Google redirect URI domain, and also builds the Apple Android return URL `${APP_BASE_URL}/functions/appleCallback` (backend functions are served on the app's own domain at `/functions/<name>`) — see [`APPLE_SIGN_IN.md`](./APPLE_SIGN_IN.md) |
 
 ### Step 3 — Deeplink Scheme
 
