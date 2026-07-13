@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, LogOut, ShieldCheck, Mail, BadgeCheck, UserPlus, ChevronRight, Bell, Bug, Trash2 } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import { removeSavedAccount } from '@/lib/savedAccounts'
 import DeleteAccountDrawer from '@/components/account/DeleteAccountDrawer'
@@ -40,7 +40,7 @@ export default function Account() {
             )}
             {user?.email_verified && (
               <span className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-background flex items-center justify-center shadow-sm">
-                <BadgeCheck className="w-5 h-5 text-primary" />
+                <F7Icon name="checkmark_seal_fill" size={18} className="text-primary" />
               </span>
             )}
           </div>
@@ -52,7 +52,7 @@ export default function Account() {
           </p>
           {isAdmin && (
             <span className="mt-2.5 inline-flex items-center gap-1 rounded-full bg-secondary/15 px-3 py-1 text-[12px] font-semibold text-secondary">
-              <ShieldCheck className="w-3.5 h-3.5" /> Administrator
+              <F7Icon name="checkmark_shield_fill" size={13} /> Administrator
             </span>
           )}
         </div>
@@ -65,7 +65,7 @@ export default function Account() {
             className="w-full text-left rounded-3xl ember-card p-4 mb-6 flex items-center gap-3.5 active:bg-muted/60 transition-colors"
           >
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <UserPlus className="w-5 h-5 text-primary" />
+              <F7Icon name="person_badge_plus_fill" size={19} className="text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[15px] font-semibold text-foreground">Protect your account</p>
@@ -73,7 +73,7 @@ export default function Account() {
                 Add an email or Google login so your data is safe and you can sign in anywhere.
               </p>
             </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+            <F7Icon name="chevron_right" size={16} className="text-muted-foreground/50" />
           </button>
         )}
 
@@ -85,7 +85,7 @@ export default function Account() {
             </p>
             <div className="rounded-3xl ember-card overflow-hidden">
               <ListRow
-                icon={Mail}
+                icon="envelope_fill"
                 iconBg="bg-primary/10"
                 iconColor="text-primary"
                 label="Email"
@@ -108,7 +108,7 @@ export default function Account() {
             </p>
             <div className="rounded-3xl ember-card overflow-hidden">
               <ListRow
-                icon={Users}
+                icon="person_2_fill"
                 iconBg="bg-secondary/15"
                 iconColor="text-secondary"
                 label="Manage users"
@@ -116,7 +116,7 @@ export default function Account() {
                 first
               />
               <ListRow
-                icon={Bell}
+                icon="bell_fill"
                 iconBg="bg-primary/10"
                 iconColor="text-primary"
                 label="Push notifications"
@@ -130,7 +130,7 @@ export default function Account() {
         {isAdmin && (
           <div className="mt-6 rounded-3xl ember-card overflow-hidden">
             <ListRow
-              icon={Bug}
+              icon="ant_fill"
               iconBg="bg-muted"
               label="Push debug"
               onClick={() => navigate('/debug')}
@@ -145,7 +145,7 @@ export default function Account() {
         {!user?.is_anonymous && (
           <div className="mt-6 rounded-3xl ember-card overflow-hidden">
             <ListRow
-              icon={LogOut}
+              icon="square_arrow_right"
               iconBg="bg-destructive/10"
               label="Sign out"
               danger
@@ -158,7 +158,7 @@ export default function Account() {
         {/* Delete account — available to everyone (guests included) */}
         <div className="mt-6 rounded-3xl ember-card overflow-hidden">
           <ListRow
-            icon={Trash2}
+            icon="trash_fill"
             iconBg="bg-destructive/10"
             label="Delete account"
             danger

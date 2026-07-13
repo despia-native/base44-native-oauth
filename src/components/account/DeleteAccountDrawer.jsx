@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Trash2, ShieldAlert } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import * as customAuth from '@/lib/customAuth'
 import { confirmWithLockedVault } from '@/lib/biometricConfirm'
@@ -73,7 +73,7 @@ export default function DeleteAccountDrawer({ open, onOpenChange, account, onDel
         </DrawerHeader>
         <div className="px-5 pt-2 flex flex-col gap-3" style={{ paddingBottom: 'calc(var(--safe-area-bottom, 0px) + 20px)' }}>
           <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center self-center">
-            {step === 1 ? <Trash2 className="w-7 h-7 text-destructive" /> : <ShieldAlert className="w-7 h-7 text-destructive" />}
+            {step === 1 ? <F7Icon name="trash_fill" size={26} className="text-destructive" /> : <F7Icon name="exclamationmark_shield_fill" size={26} className="text-destructive" />}
           </div>
           <p className="text-[14px] text-muted-foreground text-center leading-snug px-2">
             {step === 1

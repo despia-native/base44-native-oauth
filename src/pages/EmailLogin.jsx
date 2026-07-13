@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ChevronLeft } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import * as customAuth from '@/lib/customAuth'
 import { haptics } from '@/lib/haptics'
@@ -47,7 +47,7 @@ export default function EmailLogin() {
           onClick={() => navigate(-1)}
           className="flex items-center text-primary text-[17px] active:opacity-60 self-start mt-4 -ml-1"
         >
-          <ChevronLeft className="w-6 h-6" /> Back
+          <F7Icon name="chevron_left" size={22} /> Back
         </button>
 
         <div className="w-full max-w-sm md:max-w-md mx-auto flex flex-col items-center pt-8 pb-10">

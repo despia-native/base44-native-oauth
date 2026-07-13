@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Check } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import { invokeAuth } from '@/lib/customAuth'
 import PushComposer from '@/components/admin/PushComposer'
@@ -35,7 +35,7 @@ export default function AdminPush() {
           onClick={() => navigate(-1)}
           className="flex items-center text-primary text-[17px] active:opacity-60 self-start mt-4 -ml-1"
         >
-          <ChevronLeft className="w-6 h-6" /> Back
+          <F7Icon name="chevron_left" size={22} /> Back
         </button>
 
         <div className="w-full max-w-sm md:max-w-md mx-auto flex flex-col pt-4 pb-16">
@@ -82,7 +82,7 @@ export default function AdminPush() {
                       <p className="text-[14px] font-semibold text-foreground truncate">{a.full_name || 'No name'}</p>
                       <p className="text-[12px] text-muted-foreground truncate">{a.email}</p>
                     </div>
-                    {selected?.id === a.id && <Check className="w-5 h-5 text-primary shrink-0" />}
+                    {selected?.id === a.id && <F7Icon name="checkmark" size={18} className="text-primary" />}
                   </button>
                 ))}
               </div>

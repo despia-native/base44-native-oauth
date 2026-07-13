@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ChevronLeft, LockKeyhole, CheckCircle2 } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import * as customAuth from '@/lib/customAuth'
 
 export default function ResetPassword() {
@@ -36,7 +36,7 @@ export default function ResetPassword() {
       <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
         <div className="h-11 flex items-center px-2">
           <Link to="/login" className="flex items-center text-primary text-[17px] active:opacity-60">
-            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+            <F7Icon name="chevron_left" size={22} className="-ml-1" /> Back
           </Link>
         </div>
       </header>
@@ -45,8 +45,8 @@ export default function ResetPassword() {
         <div className="w-full max-w-sm md:max-w-md flex flex-col items-center pt-10">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
             {done
-              ? <CheckCircle2 className="w-7 h-7 text-secondary" />
-              : <LockKeyhole className="w-7 h-7 text-primary" />}
+              ? <F7Icon name="checkmark_circle_fill" size={26} className="text-secondary" />
+              : <F7Icon name="lock_fill" size={26} className="text-primary" />}
           </div>
           <h1 className="text-[24px] font-bold tracking-tight text-foreground text-center">
             {done ? 'Password Updated' : 'New Password'}

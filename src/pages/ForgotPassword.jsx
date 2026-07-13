@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, KeyRound } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import * as customAuth from '@/lib/customAuth'
 
 export default function ForgotPassword() {
@@ -23,7 +23,7 @@ export default function ForgotPassword() {
       <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
         <div className="h-11 flex items-center px-2">
           <Link to="/login" className="flex items-center text-primary text-[17px] active:opacity-60">
-            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+            <F7Icon name="chevron_left" size={22} className="-ml-1" /> Back
           </Link>
         </div>
       </header>
@@ -31,7 +31,7 @@ export default function ForgotPassword() {
       <div className="scroll-container flex flex-col items-center px-5 pb-safe-bottom">
         <div className="w-full max-w-sm md:max-w-md flex flex-col items-center pt-10">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
-            <KeyRound className="w-7 h-7 text-primary" />
+            <F7Icon name="lock_open_fill" size={26} className="text-primary" />
           </div>
           <h1 className="text-[24px] font-bold tracking-tight text-foreground text-center">Reset Password</h1>
           <p className="mt-2 text-[15px] text-muted-foreground text-center">

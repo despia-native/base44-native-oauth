@@ -1,4 +1,4 @@
-import { Shield, Trash2, User as UserIcon, BadgeCheck } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { format, formatDistanceToNow } from 'date-fns'
 
 export default function UserRow({ account, isSelf, onToggleRole, onDelete, busy }) {
@@ -17,7 +17,7 @@ export default function UserRow({ account, isSelf, onToggleRole, onDelete, busy 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="text-[15px] font-medium text-foreground truncate">{account.full_name || '—'}</span>
-          {account.email_verified && <BadgeCheck className="w-3.5 h-3.5 text-primary shrink-0" />}
+          {account.email_verified && <F7Icon name="checkmark_seal_fill" size={13} className="text-primary" />}
           {isSelf && <span className="text-[11px] text-muted-foreground">(you)</span>}
         </div>
         <p className="text-[13px] text-muted-foreground truncate">{account.email}</p>
@@ -31,7 +31,7 @@ export default function UserRow({ account, isSelf, onToggleRole, onDelete, busy 
       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium shrink-0 ${
         isAdmin ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
       }`}>
-        {isAdmin ? <Shield className="w-3 h-3" /> : <UserIcon className="w-3 h-3" />}
+        {isAdmin ? <F7Icon name="shield_fill" size={11} /> : <F7Icon name="person_fill" size={11} />}
         {account.role}
       </span>
 
@@ -51,7 +51,7 @@ export default function UserRow({ account, isSelf, onToggleRole, onDelete, busy 
         className="shrink-0 p-2 text-destructive active:opacity-60 disabled:opacity-30"
         aria-label="Delete account"
       >
-        <Trash2 className="w-4 h-4" />
+        <F7Icon name="trash_fill" size={15} />
       </button>
     </div>
   )

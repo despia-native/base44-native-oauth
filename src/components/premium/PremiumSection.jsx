@@ -1,4 +1,3 @@
-import { Crown, Settings2 } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import { usePremium } from '@/lib/PremiumContext'
 import { launchPaywall, openCustomerCenter, isDespia } from '@/lib/revenuecat'
@@ -19,7 +18,7 @@ export default function PremiumSection() {
         {isPremium ? (
           <>
             <ListRow
-              icon={Crown}
+              icon="star_fill"
               iconBg="bg-primary/10"
               iconColor="text-primary"
               label="Premium"
@@ -29,7 +28,7 @@ export default function PremiumSection() {
             />
             {isDespia && (
               <ListRow
-                icon={Settings2}
+                icon="gear_alt_fill"
                 iconBg="bg-muted"
                 label="Manage subscription"
                 onClick={() => openCustomerCenter(user.id)}
@@ -38,7 +37,7 @@ export default function PremiumSection() {
           </>
         ) : (
           <ListRow
-            icon={Crown}
+            icon="star_fill"
             iconBg="bg-primary/10"
             iconColor="text-primary"
             label="Upgrade to Premium"

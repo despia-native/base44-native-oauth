@@ -1,8 +1,8 @@
-import { ChevronRight } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 
-// iOS-style grouped list row. Renders as a Link, button, or static div.
+// iOS-style grouped list row. `icon` is a Framework7 Icons name string.
 export default function ListRow({
-  icon: Icon,
+  icon,
   iconBg = 'bg-secondary',
   iconColor = 'text-foreground/70',
   label,
@@ -14,16 +14,16 @@ export default function ListRow({
 }) {
   const content = (
     <>
-      {Icon && (
+      {icon && (
         <span className={`flex items-center justify-center w-7 h-7 rounded-lg ${iconBg}`}>
-          <Icon className={`w-4 h-4 ${danger ? 'text-destructive' : iconColor}`} />
+          <F7Icon name={icon} size={16} className={danger ? 'text-destructive' : iconColor} />
         </span>
       )}
       <span className={`flex-1 text-left text-[15px] ${danger ? 'text-destructive font-medium' : 'text-foreground'}`}>
         {label}
       </span>
       {value && <span className="text-[15px] text-muted-foreground">{value}</span>}
-      {showChevron && onClick && <ChevronRight className="w-4 h-4 text-muted-foreground/60" />}
+      {showChevron && onClick && <F7Icon name="chevron_right" size={14} className="text-muted-foreground/60" />}
     </>
   )
 

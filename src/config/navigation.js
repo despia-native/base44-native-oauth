@@ -6,12 +6,11 @@
 // Every page gets native push animation + edge swipe-back automatically,
 // EXCEPT the menu-bar (tab) pages below, which crossfade with no swipe.
 
-import { Home, UserCircle } from 'lucide-react'
-
+// Icons are Framework7 Icons ligature names (https://framework7.io/icons/).
 // Menu-bar (tab) pages — persistent header/tab-bar chrome, excluded from swipe.
 export const TABS = [
-  { path: '/', title: 'Home', icon: Home },
-  { path: '/account', title: 'Account', icon: UserCircle },
+  { path: '/', title: 'Home', icon: 'house_fill' },
+  { path: '/account', title: 'Account', icon: 'person_crop_circle_fill' },
 ]
 
 // Pages reachable without being signed in — everything else is protected.

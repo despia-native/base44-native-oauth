@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/lib/AuthContext'
-import { Layers, Cloud, ShieldCheck, Mail } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import AppleIcon from '@/components/AppleIcon'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
@@ -19,19 +19,20 @@ import PoweredByDespia from '@/components/PoweredByDespia'
 
 const isDespia = isNative()
 
+// Slide icons are Framework7 Icons names (SF Symbols style).
 const SLIDES = [
   {
-    icon: Layers,
+    icon: 'square_stack_3d_up_fill',
     title: 'Everything in one place',
     body: 'Your account, your data, your settings — beautifully organized and always within reach.',
   },
   {
-    icon: Cloud,
+    icon: 'cloud_fill',
     title: 'Synced across devices',
     body: 'Start on your phone, pick up anywhere. Your session follows you securely on every device.',
   },
   {
-    icon: ShieldCheck,
+    icon: 'checkmark_shield_fill',
     title: 'Private & secure',
     body: 'Sign in with Google, email, or just your device. Your data stays yours — encrypted end to end.',
   },
@@ -200,7 +201,7 @@ export default function Login() {
               onClick={() => navigate('/login/email')}
               className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
             >
-              <Mail className="w-5 h-5" />
+              <F7Icon name="envelope_fill" size={19} />
               Continue with Email
             </button>
 

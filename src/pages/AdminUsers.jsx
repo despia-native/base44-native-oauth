@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
-import { ChevronLeft, Loader2, Download } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import GlassHeader from '@/components/mobile/GlassHeader'
 import * as adminApi from '@/lib/adminUsers'
@@ -86,7 +86,7 @@ export default function AdminUsers() {
         title="Users"
         left={
           <Link to="/" className="flex items-center text-primary text-[17px] active:opacity-60 pl-1">
-            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+            <F7Icon name="chevron_left" size={22} className="-ml-1" /> Back
           </Link>
         }
         right={
@@ -97,7 +97,7 @@ export default function AdminUsers() {
             className="p-2 text-primary active:opacity-60 disabled:opacity-40"
             aria-label="Export CSV"
           >
-            <Download className="w-5 h-5" />
+            <F7Icon name="square_arrow_down" size={19} />
           </button>
         }
       />
@@ -137,7 +137,7 @@ export default function AdminUsers() {
         <div className="rounded-3xl ember-card overflow-hidden mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <span className="ember-spinner" />
             </div>
           ) : shown.length === 0 ? (
             <p className="text-center text-[15px] text-muted-foreground py-16">

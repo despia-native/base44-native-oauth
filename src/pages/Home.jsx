@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { Users, UserCircle } from 'lucide-react'
 import { useAuth } from '@/lib/AuthContext'
 import ListRow from '@/components/mobile/ListRow'
 import PoweredByDespia from '@/components/PoweredByDespia'
@@ -26,7 +25,7 @@ export default function Home() {
         {/* Grouped list */}
         <div className="rounded-3xl ember-card overflow-hidden">
           <ListRow
-            icon={UserCircle}
+            icon="person_crop_circle_fill"
             iconBg="bg-primary/10"
             iconColor="text-primary"
             label="Account"
@@ -35,7 +34,7 @@ export default function Home() {
           />
           {isAdmin && (
             <ListRow
-              icon={Users}
+              icon="person_2_fill"
               iconBg="bg-secondary/15"
               iconColor="text-secondary"
               label="Manage users"

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import F7Icon from '@/components/F7Icon'
 
 // Native-style swipeable onboarding: horizontal scroll-snap slides + page dots.
 // The swipe itself is pure CSS scroll-snap (compositor-driven, jank-free);
@@ -49,7 +50,7 @@ export default function OnboardingCarousel({ slides }) {
             className="w-full flex-shrink-0 snap-center flex flex-col items-center px-8 text-center"
           >
             <div className="w-24 h-24 rounded-[28px] ember-glass-hi flex items-center justify-center mb-7">
-              <slide.icon className="w-11 h-11 text-primary" strokeWidth={1.8} />
+              <F7Icon name={slide.icon} size={44} className="text-primary" />
             </div>
             <h2 className="text-[28px] leading-tight font-bold tracking-tight text-foreground">
               {slide.title}

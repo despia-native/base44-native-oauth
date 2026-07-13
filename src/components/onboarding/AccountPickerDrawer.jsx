@@ -1,4 +1,4 @@
-import { Mail } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import AppleIcon from '@/components/AppleIcon'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import GoogleIcon from '@/components/GoogleIcon'
@@ -43,7 +43,7 @@ export default function AccountPickerDrawer({
             <AppleIcon className="w-5 h-5" /> Apple
           </button>
           <button type="button" onClick={onEmail} className={option}>
-            <Mail className="w-5 h-5" /> Email
+            <F7Icon name="envelope_fill" size={19} /> Email
           </button>
         </div>
       </DrawerContent>

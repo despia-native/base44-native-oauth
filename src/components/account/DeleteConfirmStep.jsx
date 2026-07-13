@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Fingerprint } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 
 // Step 2 of account deletion — the session is already authenticated, so we only
 // need an explicit confirmation: biometrics on native (locked vault read),
@@ -11,7 +11,7 @@ export default function DeleteConfirmStep({ native, busy, onBiometric, onTypeCon
   if (native) {
     return (
       <button type="button" disabled={busy} onClick={onBiometric} className={dangerBtn}>
-        {busy ? <><span className="ember-spinner" aria-hidden="true" /><span className="sr-only">Deleting account…</span></> : <><Fingerprint className="w-5 h-5" aria-hidden="true" /> Confirm with biometrics</>}
+        {busy ? <><span className="ember-spinner" aria-hidden="true" /><span className="sr-only">Deleting account…</span></> : <><F7Icon name="lock_shield_fill" size={19} /> Confirm with biometrics</>}
       </button>
     )
   }

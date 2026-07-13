@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ShieldCheck } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import despia from 'despia-native'
 import { base44 } from '@/api/base44Client'
 import * as customAuth from '@/lib/customAuth'
@@ -72,7 +72,7 @@ export default function LinkAccount() {
       <header className="shrink-0 pt-safe-top bg-background/80 backdrop-blur-xl border-b border-border/60">
         <div className="h-11 flex items-center px-2">
           <Link to="/account" className="flex items-center text-primary text-[17px] active:opacity-60">
-            <ChevronLeft className="w-6 h-6 -ml-1" /> Back
+            <F7Icon name="chevron_left" size={22} className="-ml-1" /> Back
           </Link>
         </div>
       </header>
@@ -80,7 +80,7 @@ export default function LinkAccount() {
       <div className="scroll-container flex flex-col items-center px-5 pb-safe-bottom">
         <div className="w-full max-w-sm md:max-w-md flex flex-col items-center pt-8">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
-            <ShieldCheck className="w-7 h-7 text-primary" />
+            <F7Icon name="checkmark_shield_fill" size={26} className="text-primary" />
           </div>
           <h1 className="text-[24px] font-bold tracking-tight text-foreground text-center">Protect Your Account</h1>
           <p className="mt-2 text-[15px] text-muted-foreground text-center leading-relaxed">

@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { haptics } from '@/lib/haptics'
+import F7Icon from '@/components/F7Icon'
 import { TABS } from '@/config/navigation'
 
 // Menu items come from src/config/navigation.js — edit TABS there to change the menu.
@@ -50,7 +51,7 @@ export default function GlassTabBar() {
             }}
           />
         )}
-        {tabs.map(({ path, label, icon: Icon }) => {
+        {tabs.map(({ path, label, icon }) => {
           const active = pathname === path
           return (
             <button
@@ -63,7 +64,7 @@ export default function GlassTabBar() {
                 active ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
-              <Icon className={`w-[18px] h-[18px] ${active ? 'ember-tab-pop' : ''}`} strokeWidth={2.2} />
+              <F7Icon name={icon} size={18} className={active ? 'ember-tab-pop' : ''} />
               {label}
             </button>
           )

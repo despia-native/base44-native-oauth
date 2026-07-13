@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Send } from 'lucide-react'
+import F7Icon from '@/components/F7Icon'
 import { sendPush } from '@/lib/push'
 
 // Compose + send a push. target: 'all' or an account object ({id, email, ...}).
@@ -51,7 +51,7 @@ export default function PushComposer({ target }) {
         onClick={handleSend}
         className="w-full h-14 flex items-center justify-center gap-2 rounded-full ember-accent text-[16px] font-bold active:scale-95 transition-transform disabled:opacity-40"
       >
-        {sending ? <span className="ember-spinner" /> : <Send className="w-4.5 h-4.5" />}
+        {sending ? <span className="ember-spinner" /> : <F7Icon name="paperplane_fill" size={17} />}
         {target === 'all' ? 'Send to all users' : `Send to ${target?.full_name || target?.email || 'user'}`}
       </button>
     </div>
