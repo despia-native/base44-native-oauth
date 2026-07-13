@@ -15,6 +15,12 @@ import { navMotion } from '@/lib/navMotion'
 
 const EDGE = 28 // gesture must start within this many px of the left edge
 
+// There must be somewhere to go back TO. On a deep-linked / notification /
+// cold-start entry the page is the first history entry — committing the swipe
+// would slide the page off-screen while navigate(-1) does nothing, leaving a
+// blank screen (react-router keeps its history index in history.state.idx).
+const canGoBack = () => (window.history.state?.idx ?? 0) > 0
+
 export default function SwipeBack({ enabled = true, children }) {
   const navigate = useNavigate()
   const ref = useRef(null)
@@ -37,7 +43,7 @@ export default function SwipeBack({ enabled = true, children }) {
   }
 
   const onTouchStart = (e) => {
-    if (!enabled) return
+    if (!enabled || !canGoBack()) return
     const t = e.touches[0]
     if (t.clientX > EDGE) return
     gesture.current = { x: t.clientX, y: t.clientY, start: Date.now(), active: false }
@@ -95,6 +101,22 @@ export default function SwipeBack({ enabled = true, children }) {
     }
   }
 
+  // System interruption (incoming call, OS gesture) cancels the touch — spring
+  // the page back instead of leaving it stuck half-dragged off-screen.
+  const onTouchCancel = () => {
+    const g = gesture.current
+    gesture.current = null
+    if (!g?.active) return
+    cancelAnimationFrame(rafId.current)
+    rafId.current = 0
+    const el = ref.current
+    if (el) {
+      el.style.transition = 'transform .25s cubic-bezier(.3,1.1,.4,1)'
+      el.style.transform = 'translate3d(0,0,0)'
+      endGesture(el)
+    }
+  }
+
   return (
     <div
       ref={ref}
@@ -102,7 +124,7 @@ export default function SwipeBack({ enabled = true, children }) {
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      onTouchCancel={() => { gesture.current = null }}
+      onTouchCancel={onTouchCancel}
     >
       {children}
     </div>

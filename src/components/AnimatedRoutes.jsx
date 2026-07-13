@@ -1,11 +1,13 @@
 import { useRef } from 'react'
-import { Routes, Route, Navigate, useLocation, useNavigationType } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import PageNotFound from '@/lib/PageNotFound'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import GlassHeader from '@/components/mobile/GlassHeader'
 import GlassTabBar from '@/components/mobile/GlassTabBar'
 import SwipeBack from '@/components/SwipeBack'
+import RedirectToLogin from '@/components/RedirectToLogin'
+import ScrollMemory from '@/components/ScrollMemory'
 import { pages, componentFor } from '@/lib/pageRoutes'
 import { navMotion } from '@/lib/navMotion'
 import { TABS, PUBLIC_PATHS, ALIASES } from '@/config/navigation'
@@ -68,6 +70,7 @@ export default function AnimatedRoutes() {
       : [...stack, location.pathname]
     if (stackNext[stackNext.length - 1] !== location.pathname) stackNext = [...stackNext, location.pathname]
     navRef.current = { path: location.pathname, direction, stack: stackNext }
+    navMotion.direction = direction // ScrollMemory restores scroll only on back/swipe
   }
   const direction = navRef.current.direction
 
@@ -100,6 +103,7 @@ export default function AnimatedRoutes() {
         transition={transition}
       >
         {/* Native edge swipe-back on every page EXCEPT the menu-bar roots */}
+        <ScrollMemory />
         <SwipeBack enabled={!tabPage}>
           <Routes location={location}>
             {publicPages.map(({ path, Component }) => (
@@ -109,7 +113,7 @@ export default function AnimatedRoutes() {
               const Component = componentFor(target)
               return Component ? <Route key={alias} path={alias} element={<Component />} /> : null
             })}
-            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+            <Route element={<ProtectedRoute unauthenticatedElement={<RedirectToLogin />} />}>
               {protectedPages.map(({ path, Component }) => (
                 <Route key={path} path={path} element={<Component />} />
               ))}

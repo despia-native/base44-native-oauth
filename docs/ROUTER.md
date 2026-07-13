@@ -63,6 +63,11 @@ Key implementation details (don't regress these):
 iOS-style swipe-from-left-edge to go back, on every page except tab roots:
 
 - Gesture must start within 28px of the left edge; vertical scroll wins.
+- The gesture only arms when there IS a previous history entry
+  (`history.state.idx > 0`) — on a deep-linked/cold-start first page a committed
+  swipe would otherwise slide the page off with nowhere to navigate (blank screen).
+- A cancelled touch (incoming call, OS gesture) springs the page back instead of
+  leaving it stuck half-dragged.
 - The finger drags the page 1:1 via `translate3d` — one DOM write per frame (rAF-batched).
 - Release past 33% of the width (or a quick flick) commits: the page finishes sliding
   off via a CSS transition, then `navigate(-1)` fires.
@@ -73,15 +78,21 @@ iOS-style swipe-from-left-edge to go back, on every page except tab roots:
 ## 5. Auth guarding — `src/components/ProtectedRoute.jsx`
 
 All non-public pages are nested under `ProtectedRoute` inside `AnimatedRoutes`.
-Unauthenticated visits redirect to `/login`. The `/auth` and `/oauth/auth` routes MUST
+Unauthenticated visits redirect to `/login` via `RedirectToLogin`, which carries
+the intended destination in `location.state.from` — after signing in (any method),
+`Login`/`EmailLogin` return the user to where they were headed instead of `/`. The `/auth` and `/oauth/auth` routes MUST
 stay public — the native OAuth deep link re-enters the app through them (see
 `DESPIA_OAUTH.md` and `src/main.jsx`, which stashes tokens and normalizes the URL
 before React mounts).
 
-## 6. Scroll behavior — `src/components/ScrollToTop.jsx`
+## 6. Scroll behavior — `ScrollToTop.jsx` + `ScrollMemory.jsx`
 
-Forward navigations scroll to top (or to a `#hash` target); back navigations (`POP`)
-keep the previous scroll position, like native.
+Forward navigations start at the top (pages remount) and `#hash` targets are
+scrolled to inside the page's `.scroll-container`. **`ScrollMemory`** records each
+page's scroll position while the user scrolls (passive listener) and restores it
+when the page is re-entered via a back/swipe navigation — native-style scroll
+restoration despite pages remounting for the route transitions. It reads the
+navigation direction from `src/lib/navMotion.js` (written by `AnimatedRoutes`).
 
 ## Adding a page — checklist
 

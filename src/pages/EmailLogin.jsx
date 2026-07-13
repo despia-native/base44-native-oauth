@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import * as customAuth from '@/lib/customAuth'
@@ -9,6 +9,7 @@ import { haptics } from '@/lib/haptics'
 // and swipes back like a native page.
 export default function EmailLogin() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { checkUserAuth } = useAuth()
   const [mode, setMode] = useState('login') // 'login' | 'register'
   const [email, setEmail] = useState('')
@@ -30,7 +31,8 @@ export default function EmailLogin() {
       }
       haptics.success()
       await checkUserAuth()
-      navigate('/', { replace: true })
+      // Honor a deep-link destination carried through the login redirect.
+      navigate(location.state?.from || '/', { replace: true })
     } catch (err) {
       const msg = err?.response?.data?.error || err?.message || 'Something went wrong'
       haptics.error()

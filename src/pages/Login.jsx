@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/lib/AuthContext'
 import F7Icon from '@/components/F7Icon'
 import AppleIcon from '@/components/AppleIcon'
@@ -40,6 +40,7 @@ const SLIDES = [
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { checkUserAuth } = useAuth()
   const [pickerOpen, setPickerOpen] = useState(false)
   const [error, setError] = useState('')
@@ -53,9 +54,11 @@ export default function Login() {
   const [autoSignIn, setAutoSignIn] = useState(isDespia)
 
   // SPA entry into the app — refresh auth state, then soft-navigate (no reload).
+  // Deep links into protected pages land here first (via RedirectToLogin) with
+  // the intended destination in location.state.from — return the user there.
   const enterApp = async () => {
     await checkUserAuth()
-    navigate('/', { replace: true })
+    navigate(location.state?.from || '/', { replace: true })
   }
 
   useEffect(() => {
@@ -198,7 +201,7 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={() => navigate('/login/email')}
+              onClick={() => navigate('/login/email', { state: location.state })}
               className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
             >
               <F7Icon name="envelope_fill" size={19} />
@@ -222,7 +225,7 @@ export default function Login() {
         onRemoveSaved={handleRemoveSaved}
         onGoogle={() => { setPickerOpen(false); handleGoogleSignIn() }}
         onApple={() => { setPickerOpen(false); handleAppleSignIn() }}
-        onEmail={() => { setPickerOpen(false); navigate('/login/email') }}
+        onEmail={() => { setPickerOpen(false); navigate('/login/email', { state: location.state }) }}
       />
     </div>
   )

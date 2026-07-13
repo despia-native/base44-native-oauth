@@ -21,12 +21,14 @@ export default function ScrollToTop() {
     if (hash) {
       const id = getHashId(hash);
       const timer = window.setTimeout(() => {
+        // scrollIntoView scrolls the page's own .scroll-container (body scroll
+        // is disabled app-wide — see index.css), so no window.scrollTo here.
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
       }, 50);
       return () => window.clearTimeout(timer);
     }
-
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    // No hash: nothing to do — pages remount at the top on forward navigation,
+    // and ScrollMemory handles position restoration on back/swipe.
   }, [pathname, hash, navigationType]);
 
   return null;
