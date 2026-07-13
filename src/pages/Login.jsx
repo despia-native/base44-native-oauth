@@ -44,6 +44,12 @@ export default function Login() {
   const { checkUserAuth } = useAuth()
   const [pickerOpen, setPickerOpen] = useState(false)
   const [error, setError] = useState('')
+  // Simple tap feedback: spinner on the tapped provider button for 2s (no state check).
+  const [btnLoading, setBtnLoading] = useState('')
+  const flashLoader = (which) => {
+    setBtnLoading(which)
+    setTimeout(() => setBtnLoading(''), 2000)
+  }
   const [savedAccounts, setSavedAccounts] = useState([])
   // Prevents the sign-in buttons flashing before we know whether a saved
   // account exists — the CTA area stays empty until the list has loaded.
@@ -112,6 +118,7 @@ export default function Login() {
 
   const handleGoogleSignIn = async () => {
     setError('')
+    flashLoader('google')
     // Both web and native get a Google access token, then exchange it for our own JWT on /auth.
     // Only native needs the deep-link hop — on the web the callback stays on this origin.
     const res = await base44.functions.invoke('googleAuthUrl', { deeplink_scheme: isDespia ? appConfig.deeplinkScheme : '' })
@@ -125,6 +132,7 @@ export default function Login() {
 
   const handleAppleSignIn = async () => {
     setError('')
+    flashLoader('apple')
     try {
       const result = await signInWithApple()
       if (!result) return // Android: sign-in continues via the deeplink → /auth flow
@@ -184,19 +192,33 @@ export default function Login() {
           <>
             <button
               onClick={handleGoogleSignIn}
+              disabled={btnLoading === 'google'}
               className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-primary active:scale-95 transition-transform text-[16px] font-bold"
             >
-              <GoogleIcon className="w-5 h-5" />
-              Continue with Google
+              {btnLoading === 'google' ? (
+                <span className="ember-spinner" aria-label="Loading" />
+              ) : (
+                <>
+                  <GoogleIcon className="w-5 h-5" />
+                  Continue with Google
+                </>
+              )}
             </button>
 
             <button
               type="button"
               onClick={handleAppleSignIn}
+              disabled={btnLoading === 'apple'}
               className="w-full h-14 flex items-center justify-center gap-3 rounded-full ember-glass ember-press active:scale-95 transition-transform text-[16px] font-semibold text-foreground"
             >
-              <AppleIcon className="w-5 h-5" />
-              Continue with Apple
+              {btnLoading === 'apple' ? (
+                <span className="ember-spinner" aria-label="Loading" />
+              ) : (
+                <>
+                  <AppleIcon className="w-5 h-5" />
+                  Continue with Apple
+                </>
+              )}
             </button>
 
             <button
