@@ -2,7 +2,7 @@
 
 This project is a **working template** for a fully custom auth system (native Google Sign-In in Despia + your own JWT sessions on Base44). It runs as-is; to make it *yours*, swap the values below.
 
-> Read [`/DESPIA_OAUTH.md`](./DESPIA_OAUTH.md) for the full mental model and how everything fits together. **This file is just the checklist of what to change.**
+> Read [`DESPIA_OAUTH.md`](./DESPIA_OAUTH.md) for the full mental model and how everything fits together. **This file is just the checklist of what to change.**
 
 ---
 
@@ -83,7 +83,7 @@ Set each of these. They are **secrets**, not code — so they never live in the 
 - [ ] Google Console redirect URI = `APP_BASE_URL` + `/native-callback.html`
 - [ ] Despia scheme + `oauth/auth` path registered
 
-When all boxes are checked, follow the **Guided Walkthrough** in [`/DESPIA_OAUTH.md`](./DESPIA_OAUTH.md#guided-walkthrough-with-checkpoints) to verify each layer.
+When all boxes are checked, follow the **Guided Walkthrough** in [`DESPIA_OAUTH.md`](./DESPIA_OAUTH.md#guided-walkthrough-with-checkpoints) to verify each layer.
 
 ---
 

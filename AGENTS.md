@@ -4,7 +4,7 @@
 
 This is a Base44 app repository. Treat it as user-owned application code, keep changes focused on the user's request, and preserve existing project conventions.
 
-Start with `README.md` for local setup, environment variables, and publish workflow.
+Start with `README.md` for local setup, environment variables, and publish workflow. All project documentation lives in `docs/` — see `docs/README.md` for the index.
 
 ## What This App Is — Custom Auth for Despia (read before touching auth)
 
@@ -12,8 +12,8 @@ This codebase is a **template for a fully custom authentication system**: native
 
 **Before changing anything auth-related, read these docs:**
 
-- **`TEMPLATE_SETUP.md`** — the per-project checklist (deep-link scheme, secrets, Google/Despia setup).
-- **`DESPIA_OAUTH.md`** — the full mental model: why WebViews break normal OAuth, the authorization-code exchange flow (single-use Google code → server-side exchange → our JWT), how the `oauth://` native bridge and `<scheme>://oauth/auth` deep link differ, JWT sessions, and security notes.
+- **`docs/TEMPLATE_SETUP.md`** — the per-project checklist (deep-link scheme, secrets, Google/Despia setup).
+- **`docs/DESPIA_OAUTH.md`** — the full mental model: why WebViews break normal OAuth, the authorization-code exchange flow (single-use Google code → server-side exchange → our JWT), how the `oauth://` native bridge and `<scheme>://oauth/auth` deep link differ, JWT sessions, and security notes.
 
 Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customAuth.js`, `src/lib/AuthContext.jsx`, `src/pages/Auth.jsx`, `public/native-callback.html`, and the backend functions (`authRegister`, `authLogin`, `googleSignIn`, `authMe`, `authRequestReset`, `authResetPassword`, `googleAuthUrl`, `adminUsers`). Don't replace this with `base44.auth` — the custom design is intentional.
 
@@ -21,7 +21,7 @@ Key auth pieces: `src/config/app-config.js` (deep-link config), `src/lib/customA
 
 **Hard rule:** the app must always look and feel like a native iOS/Android app,
 never a wrapped website. Before creating or editing ANY screen or component,
-**read `DESIGN_GUIDELINES.md`** — it defines the mandatory app shell (no body
+**read `docs/DESIGN_GUIDELINES.md`** — it defines the mandatory app shell (no body
 scroll, `.scroll-container`), safe-area rules, the ember material system,
 responsive `.page-wrap` caps for iPad/desktop, touch/haptic/motion standards,
 and the new-screen checklist. Only design tokens and ember materials — never
@@ -30,7 +30,7 @@ full-width layouts on tablet.
 
 ## Accessibility (read before adding any UI)
 
-**Read `ACCESSIBILITY.md`** before creating or editing any screen/component.
+**Read `docs/ACCESSIBILITY.md`** before creating or editing any screen/component.
 Summary: real `<button>`/`<a>`/`<input>` elements only; every input gets an
 `aria-label` + correct `autoComplete`/`inputMode`; icon-only controls get
 `aria-label`s; errors use `role="alert"`, async/loading states `role="status"`;
@@ -39,7 +39,7 @@ button alternative. Target: WCAG 2.1 AA with VoiceOver/TalkBack.
 
 ## Animation & WebView Performance (read before adding any animation)
 
-**Read `DOM_OPTIMIZATION.md`** before writing any animated or gesture-driven
+**Read `docs/DOM_OPTIMIZATION.md`** before writing any animated or gesture-driven
 code. Summary: prefer pure CSS (transform/opacity only); JS-driven motion must
 be rAF-batched with `translate3d` and scoped `will-change`; never animate
 box-shadow/backdrop-filter/height; high-frequency events (`scroll`,
@@ -50,20 +50,20 @@ keep animations smooth in WKWebView / Android WebView and iOS Low Power Mode.
 
 **Hard rule:** no direct database access from the client — all entity access goes
 through backend functions (verify app JWT → `base44.asServiceRole`). Every entity,
-existing or new, MUST include the deny-all `rls` block. **Read `DB_SECURITY.md`**
+existing or new, MUST include the deny-all `rls` block. **Read `docs/DB_SECURITY.md`**
 for the exact block, the rationale, and the new-entity checklist. Never add
 `base44.entities.*` calls in frontend code, and never create an entity schema
 without the deny-all RLS block.
 
 ## Despia Native Features — ALWAYS query the live docs
 
-This app runs inside a Despia native shell with 50+ native capabilities (push, biometrics, camera, haptics, IAP, geolocation, …). See **`DESPIA_NATIVE.md`** for the agent workflow.
+This app runs inside a Despia native shell with 50+ native capabilities (push, biometrics, camera, haptics, IAP, geolocation, …). See **`docs/DESPIA_NATIVE.md`** for the agent workflow.
 
 **Rule:** before implementing ANY Despia native feature, **fetch https://setup.despia.com** (or its machine index https://setup.despia.com/llms.txt) and confirm the exact `despia(...)` bridge command + setup. Never guess Despia APIs from memory — the live docs are the source of truth.
 
 ## Native Bridge Calls — Never Freeze the UI (read before awaiting `despia(...)`)
 
-**Read `ANTI_FREEZE.md`** before awaiting any `despia(...)` call. The bridge has
+**Read `docs/ANTI_FREEZE.md`** before awaiting any `despia(...)` call. The bridge has
 no guaranteed callback — a dead call hangs 15–30s. Summary: wrap every awaited
 result in `raceTimeout(call, fallback)` (2s cap, prefer wrapping inside the lib
 module); cap button busy states with `withCappedBusy(setBusy, task)` (busy ≤2s

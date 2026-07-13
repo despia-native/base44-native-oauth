@@ -26,7 +26,7 @@ across the existing UI.
   and `inputMode` so password managers and the right keyboard work.
 - Icon-only buttons always carry `aria-label` (e.g. "Remove account from this
   device" in the account picker).
-- Decorative images/icons: avatars use `alt=""`; lucide icons are
+- Decorative images/icons: avatars use `alt=""`; icon glyphs (`F7Icon`) are
   `aria-hidden` by default; explicit `aria-hidden="true"` wherever an icon
   sits next to its own text.
 

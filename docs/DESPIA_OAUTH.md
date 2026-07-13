@@ -404,7 +404,7 @@ If you're explaining this to someone, these are the ideas that unlock it:
 
 ## What to Change Per Project
 
-Everything per-project lives in exactly three spots (full checklist in [`/src/TEMPLATE_SETUP.md`](./src/TEMPLATE_SETUP.md)):
+Everything per-project lives in exactly three spots (full checklist in [`TEMPLATE_SETUP.md`](./TEMPLATE_SETUP.md)):
 
 1. **`src/config/app-config.js`** → `deeplinkScheme` (the only frontend edit)
 2. **Base44 secrets:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `RESEND_FROM`, `APP_BASE_URL`

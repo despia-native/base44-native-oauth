@@ -54,7 +54,7 @@ Key implementation details (don't regress these):
 - z-index comes from the variants so the moving page is always on top, exactly like iOS.
 - Spring physics (`stiffness 400, damping 42`) for push/back; **Reduce Motion** → short crossfade.
 - No permanent `will-change` — framer-motion promotes GPU layers only while animating
-  (WKWebView / Low Power Mode perf, see `src/DOM_OPTIMIZATION.md`).
+  (WKWebView / Low Power Mode perf, see `DOM_OPTIMIZATION.md`).
 - Tab pages render `GlassHeader` + `GlassTabBar` OUTSIDE the animated container, so
   the chrome stays perfectly still while pages move under it.
 

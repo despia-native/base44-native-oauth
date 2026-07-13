@@ -6,11 +6,11 @@ A complete, **store-review-ready foundation** — it handles the common hybrid-a
 
 Perfect for indie hackers, startups, and agencies building an **MVP mobile app**, converting a **web app to a native app**, publishing a **React app to the App Store**, or launching a **SaaS mobile client** without writing Swift or Kotlin.
 
-**📖 Start here:**
-- [`TEMPLATE_SETUP.md`](./src/TEMPLATE_SETUP.md) — the checklist to make this app yours (config, secrets, external accounts).
-- [`DESIGN_GUIDELINES.md`](./src/DESIGN_GUIDELINES.md) — the mandatory native-first UI system (app shell, materials, motion).
-- [`JWT_AUTH.md`](./JWT_AUTH.md) — the custom authentication system (single source of truth for auth).
-- [`DESPIA_OAUTH.md`](./src/DESPIA_OAUTH.md) — how Despia, Base44, and Google OAuth fit together.
+**📖 Start here — all documentation lives in [`docs/`](./docs/README.md):**
+- [`docs/TEMPLATE_SETUP.md`](./docs/TEMPLATE_SETUP.md) — the checklist to make this app yours (config, secrets, external accounts).
+- [`docs/DESIGN_GUIDELINES.md`](./docs/DESIGN_GUIDELINES.md) — the mandatory native-first UI system (app shell, materials, motion).
+- [`docs/JWT_AUTH.md`](./docs/JWT_AUTH.md) — the custom authentication system (single source of truth for auth).
+- [`docs/DESPIA_OAUTH.md`](./docs/DESPIA_OAUTH.md) — how Despia, Base44, and Google OAuth fit together.
 
 ---
 
@@ -22,14 +22,14 @@ Everything Apple and Google review teams commonly reject hybrid apps for is alre
 |---|---|
 | **Sign in with Apple** (required when offering Google login on iOS) | Native Apple Sign-In (`appleSignIn`, `src/lib/appleAuth.js`) |
 | **Guest / loginless use** | Automatic anonymous device accounts — the app is always usable without forcing sign-up (`src/lib/deviceAuth.js`) |
-| **In-app account deletion** (App Store 5.1.1(v)) | Two-step delete flow with biometric (native) or typed (web) confirmation — `ACCOUNT_DELETION.md` |
-| **Native look & feel** (no "wrapped website" rejections) | Full native-first design system: no body scroll, safe areas, spring page transitions, iOS sheets, haptics — `DESIGN_GUIDELINES.md` |
-| **Performance in WebView** | GPU-only animations, rAF-batched DOM work, Low Power Mode–safe — `src/DOM_OPTIMIZATION.md` |
-| **Accessibility** | WCAG 2.1 AA with VoiceOver/TalkBack support throughout — `src/ACCESSIBILITY.md` |
+| **In-app account deletion** (App Store 5.1.1(v)) | Two-step delete flow with biometric (native) or typed (web) confirmation — `docs/ACCOUNT_DELETION.md` |
+| **Native look & feel** (no "wrapped website" rejections) | Full native-first design system: no body scroll, safe areas, spring page transitions, iOS sheets, haptics — `docs/DESIGN_GUIDELINES.md` |
+| **Performance in WebView** | GPU-only animations, rAF-batched DOM work, Low Power Mode–safe — `docs/DOM_OPTIMIZATION.md` |
+| **Accessibility** | WCAG 2.1 AA with VoiceOver/TalkBack support throughout — `docs/ACCESSIBILITY.md` |
 | **In-app purchases** | RevenueCat integration for premium subscriptions (`src/lib/revenuecat.js`, `src/lib/PremiumContext.jsx`) |
-| **Privacy / data security** | Deny-all RLS on every entity; all data access via authenticated backend functions — `DB_SECURITY.md` |
+| **Privacy / data security** | Deny-all RLS on every entity; all data access via authenticated backend functions — `docs/DB_SECURITY.md` |
 
-> ⚠️ **Recommended before public launch: add rate limiting.** The auth endpoints (login, register, password reset) ship without app-level per-IP / per-email throttling. Add throttling (e.g. an attempt counter per email + per IP with a cooldown) before exposing sign-up to the public — see the known tradeoffs in `DESPIA_OAUTH.md`.
+> ⚠️ **Recommended before public launch: add rate limiting.** The auth endpoints (login, register, password reset) ship without app-level per-IP / per-email throttling. Add throttling (e.g. an attempt counter per email + per IP with a cooldown) before exposing sign-up to the public — see the known tradeoffs in `docs/DESPIA_OAUTH.md`.
 
 ## 📱 What's Included
 
@@ -48,7 +48,7 @@ A complete, self-owned **mobile authentication system**: **social login (Google 
 - Backend: `auth*`, `googleSignIn`, `appleSignIn`, `deviceSignIn` functions. Frontend: `src/lib/customAuth.js` + `src/lib/AuthContext.jsx`.
 - Required secrets: `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY`.
 
-Full flows and security practices: [`JWT_AUTH.md`](./JWT_AUTH.md).
+Full flows and security practices: [`docs/JWT_AUTH.md`](./docs/JWT_AUTH.md).
 
 ### Native capabilities (via Despia)
 | Feature | Mechanism |
@@ -70,23 +70,29 @@ In a plain browser the app still runs (web preview); native-only features gracef
 Role-gated **admin dashboard** pages: **user management** with analytics, stats and login charts (`/admin/users`), and a **push-notification composer** for targeted push campaigns (`/admin/push`).
 
 ### Database security
-Every entity ships with a **deny-all RLS block** — zero direct client database access. All reads/writes flow through backend functions that verify the app JWT and use the service role. Rules and checklist: [`DB_SECURITY.md`](./DB_SECURITY.md).
+Every entity ships with a **deny-all RLS block** — zero direct client database access. All reads/writes flow through backend functions that verify the app JWT and use the service role. Rules and checklist: [`docs/DB_SECURITY.md`](./docs/DB_SECURITY.md).
 
 ## 🗂 Project Docs
 
+All documentation lives in the [`docs/`](./docs/README.md) folder — see [`docs/README.md`](./docs/README.md) for the full index.
+
 | Doc | Covers |
 |---|---|
-| `TEMPLATE_SETUP.md` | Per-project setup checklist |
-| `JWT_AUTH.md` | The complete auth system |
-| `DESPIA_OAUTH.md` | OAuth in WebViews, deep links, native bridge |
-| `ACCOUNT_DELETION.md` | Store-compliant deletion flow |
-| `DESIGN_GUIDELINES.md` | Native-first UI rules |
-| `src/DOM_OPTIMIZATION.md` | Animation & WebView performance rules |
-| `src/ACCESSIBILITY.md` | Accessibility standard & checklist |
-| `DB_SECURITY.md` | Deny-all RLS and data-access rules |
-| `PUSH_NOTIFICATIONS.md` | Push setup and sending |
-| `ANTI_FREEZE.md` | Never-block-the-UI rules for native bridge calls |
-| `src/DESPIA_NATIVE.md` | Working with Despia native features |
+| `docs/TEMPLATE_SETUP.md` | Per-project setup checklist |
+| `docs/JWT_AUTH.md` | The complete auth system |
+| `docs/DESPIA_OAUTH.md` | OAuth in WebViews, deep links, native bridge |
+| `docs/APPLE_SIGN_IN.md` | Sign In with Apple setup & flows |
+| `docs/GOOGLE_LOGIN_BASE44_LIMITATIONS.md` | Why built-in auth couldn't be used |
+| `docs/ACCOUNT_DELETION.md` | Store-compliant deletion flow |
+| `docs/DESIGN_GUIDELINES.md` | Native-first UI rules |
+| `docs/ROUTER.md` | Routing, transitions, swipe-back navigation |
+| `docs/ICONS.md` | Framework7 Icons system & vocabulary |
+| `docs/DOM_OPTIMIZATION.md` | Animation & WebView performance rules |
+| `docs/ACCESSIBILITY.md` | Accessibility standard & checklist |
+| `docs/DB_SECURITY.md` | Deny-all RLS and data-access rules |
+| `docs/PUSH_NOTIFICATIONS.md` | Push setup and sending |
+| `docs/ANTI_FREEZE.md` | Never-block-the-UI rules for native bridge calls |
+| `docs/DESPIA_NATIVE.md` | Working with Despia native features |
 
 > ℹ️ **Keep the Base44 setup below intact.** This project runs *on* Base44 — the CLI, config, and hosted-backend steps are how you run, edit, and publish it.
 
