@@ -100,6 +100,21 @@ export default function Account() {
         {/* Premium / subscription */}
         <PremiumSection />
 
+        {/* Push demo — test notifications with every option, on this device */}
+        <p className="px-1 pt-6 pb-2 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Testing
+        </p>
+        <div className="rounded-3xl ember-card overflow-hidden">
+          <ListRow
+            icon="bell_circle_fill"
+            iconBg="bg-primary/10"
+            iconColor="text-primary"
+            label="Push notification demo"
+            onClick={() => navigate('/demo')}
+            first
+          />
+        </div>
+
         {/* Admin group */}
         {isAdmin && (
           <>
