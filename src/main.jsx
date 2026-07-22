@@ -6,6 +6,9 @@ import 'framework7-icons/css/framework7-icons.css'
 import '@/index.css'
 import { captureIncomingToken, hasPendingToken } from '@/lib/deeplinkToken'
 import despia from 'despia-native'
+// Registers window.onNotificationEvent as early as possible so notification
+// tap payloads (path/url/metadata) are caught even on cold starts.
+import '@/lib/notificationEvents'
 
 // Our layout is a fixed full-height frame that handles the keyboard itself —
 // disable the native WebView resize/reposition on keyboard open so the view

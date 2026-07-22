@@ -3,6 +3,7 @@ import F7Icon from '@/components/F7Icon'
 import { useAuth } from '@/lib/AuthContext'
 import { sendPushToSelf, linkPushUser } from '@/lib/push'
 import PushDemoAdvanced from '@/components/demo/PushDemoAdvanced'
+import PushDemoReceived from '@/components/demo/PushDemoReceived'
 
 const DEFAULTS = {
   title: 'Test push 🔔',
@@ -86,6 +87,8 @@ export default function PushDemoForm() {
         {sending ? <span className="ember-spinner" /> : <F7Icon name="bell_fill" size={19} />}
         Send myself this push
       </button>
+
+      <PushDemoReceived />
 
       <p className="text-[12px] text-muted-foreground px-1 leading-relaxed">
         Your user id: <span className="font-mono">{user?.id}</span>
